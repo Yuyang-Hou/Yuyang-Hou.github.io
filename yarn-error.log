@@ -1,0 +1,61 @@
+Arguments: 
+  /Users/onlycat/.nvm/versions/node/v10.24.1/bin/node /Users/onlycat/.nvm/versions/node/v10.24.1/bin/yarn install --production --ignore-optional --silent
+
+PATH: 
+  /Users/onlycat/.nvm/versions/node/v10.24.1/bin:/Library/Frameworks/Python.framework/Versions/3.6/bin:/Library/Frameworks/Python.framework/Versions/3.10/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/Applications/VMware Fusion.app/Contents/Public:/usr/local/go/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  10.24.1
+
+Platform: 
+  darwin x64
+
+Trace: 
+  Error: https://ccc-npm.leihuo.netease.com/hexo: authorization required to access package hexo
+      at Request.params.callback [as _callback] (/Users/onlycat/.nvm/versions/node/v10.24.1/lib/node_modules/yarn/lib/cli.js:66145:18)
+      at Request.self.callback (/Users/onlycat/.nvm/versions/node/v10.24.1/lib/node_modules/yarn/lib/cli.js:140890:22)
+      at Request.emit (events.js:198:13)
+      at Request.<anonymous> (/Users/onlycat/.nvm/versions/node/v10.24.1/lib/node_modules/yarn/lib/cli.js:141862:10)
+      at Request.emit (events.js:198:13)
+      at IncomingMessage.<anonymous> (/Users/onlycat/.nvm/versions/node/v10.24.1/lib/node_modules/yarn/lib/cli.js:141784:12)
+      at Object.onceWrapper (events.js:286:20)
+      at IncomingMessage.emit (events.js:203:15)
+      at endReadableNT (_stream_readable.js:1145:12)
+      at process._tickCallback (internal/process/next_tick.js:63:19)
+
+npm manifest: 
+  {
+    "name": "hexo-site",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+      "build": "hexo generate",
+      "clean": "hexo clean",
+      "deploy": "hexo deploy",
+      "server": "hexo server"
+    },
+    "hexo": {
+      "version": ""
+    },
+    "dependencies": {
+      "hexo": "^6.2.0",
+      "hexo-generator-archive": "^1.0.0",
+      "hexo-generator-category": "^1.0.0",
+      "hexo-generator-index": "^2.0.0",
+      "hexo-generator-tag": "^1.0.0",
+      "hexo-renderer-ejs": "^2.0.0",
+      "hexo-renderer-marked": "^5.0.0",
+      "hexo-renderer-stylus": "^2.1.0",
+      "hexo-server": "^3.0.0",
+      "hexo-theme-landscape": "^0.0.3"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
