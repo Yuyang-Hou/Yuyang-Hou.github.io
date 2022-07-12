@@ -1,0 +1,91 @@
+# 头像
+avatar:
+  enable: true
+  url: /images/avatar.jpg
+  rounded: true
+  opacity: 1
+  mickey_mouse: false
+  status:
+    enable: true
+    emoji: 😀
+    message: 不想上学
+# 点击烟花
+fireworks:
+  enable: false
+  # colors:
+  #   - '102, 167, 221'
+  #   - '62, 131, 225'
+  #   - '33, 78, 194'
+# 社交图标
+social:
+  - name: GitHub
+    link: https://github.com/Yuyang-Hou
+    icon: ri:github-line
+    color: '#181717'
+  - name: E-Mail
+    link: mailto:508701891@qq.com
+    icon: ri:mail-line
+    color: '#8E71C1'
+    # - name: Telphone
+    # link: 17873163001
+    # icon: ri:phone-line
+    # color: '#8E71C1'
+      # - name: RSS
+  #   # set rss in your root config
+  #   # https://github.com/hexojs/hexo-generator-feed
+  #   link: /atom.xml # config.feed.path
+  #   icon: ri:rss-line
+  #   color: orange
+  # - name: 网易云音乐
+  #   link: https://music.163.com/#/user/home?id=247102977
+  #   icon: ri:netease-cloud-music-line
+  #   color: '#C10D0C'
+  # - name: 哔哩哔哩动画
+  #   link: https://space.bilibili.com/1579790
+  #   icon: ri:bilibili-line
+  #   color: '#FF8EB3'
+  # - name: 微信公众号
+  #   link: https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg
+  #   icon: ri:wechat-2-line
+  #   color: '#1AAD19'
+  # - name: Twitter
+  #   link: https://twitter.com/YunYouJun
+  #   icon: ri:twitter-line
+  #   color: '#1da1f2'
+  # - name: Telegram
+  #   link: https://t.me/YunYouJun
+  #   icon: ri:telegram-line
+  #   color: '#0088CC'
+  # - name: Telegram Channel
+  #   link: https://t.me/elpsycn
+  #   icon: ri:telegram-fill
+  #   color: '#0088CC'
+  # - name: Travelling
+  #   link: https://travellings.link
+  #   icon: ri:send-plane-2-line
+  #   color: black
+
+reward:
+  enable: false
+
+footer:
+  powered:
+    enable: false
+post_meta:
+  item_text: false
+  created_at: true
+  updated_at: false
+  categories: true
+  tags: true
+
+banner:
+  enable: true
+  title: 一只猫的小站
+  border: true
+  cloud:
+    enable: true
+    color: white
+  go_down:
+    enable: true
+    icon: ri:arrow-down-s-line
+favicon: /favicon.svg
