@@ -1,6 +1,7 @@
 ---
-title git常用指令
-tag git
+title: git常用指令
+tag: git
+date: 2022-06-14
 ---
 
 ## 修改最后一次提交commit信息

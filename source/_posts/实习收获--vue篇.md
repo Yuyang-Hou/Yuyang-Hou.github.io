@@ -1,5 +1,6 @@
 ---
-Title 实习收获--vue篇
+title: 实习收获--vue篇
+date: 2022-06-13
 ---
 
 vue响应式
