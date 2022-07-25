@@ -1,8 +1,8 @@
 ---
-Title: leetcode top100记录
+title: leetcode top100记录
 ---
 
-争取三天拿下，然后狂背，至少面试能想出来思路
+争取三天拿下，至少面试能想出来思路
 
 ### 1 两数之和   简单
 
@@ -911,21 +911,1440 @@ var sortColors = function (nums) {
 
 
 ### 76 最小覆盖子串   困难
-### 78子集   中等
+### 78子集   中等 不是很理解
+
+```
+var subsets = function(nums) {
+    const t = [];
+    const ans = [];
+    const dfs = (cur) => {
+        if (cur === nums.length) {
+            ans.push(t.slice());
+            return;
+        }
+        t.push(nums[cur]);
+        dfs(cur + 1);
+        t.pop(t.length - 1);
+        dfs(cur + 1);
+    }
+    dfs(0);
+    return ans;
+};
+```
+
+
+
 ### 79单词搜索   中等
+
+```js
+var exist = function(board, word) {
+    const h = board.length, w = board[0].length;
+    const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
+    const visited = new Array(h).fill().map(_ => new Array(w).fill(false));
+    const check = (i, j, s, k) => {
+        if (board[i][j] != s.charAt(k)) {
+            return false;
+        } else if (k == s.length - 1) {
+            return true;
+        }
+        visited[i][j] = true;
+        let result = false;
+        for (const [dx, dy] of directions) {
+            let newi = i + dx, newj = j + dy;
+            if (newi >= 0 && newi < h && newj >= 0 && newj < w) {
+                if (!visited[newi][newj]) {
+                    const flag = check(newi, newj, s, k + 1);
+                    if (flag) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        }
+        visited[i][j] = false;
+        return result;
+    }
+
+    for (let i = 0; i < h; i++) {
+        for (let j = 0; j < w; j++) {
+            const flag = check(i, j, word, 0);
+            if (flag) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+```
+
+
+
 ### 84 柱状图中最大的矩形   困难
 ### 85 最大矩形   困难
 ### 94 二叉树的中序遍历   简单
+
+```js
+var inorderTraversal = function(root) {
+    const dfs = (root) => {
+        if (root === null) {
+            return 
+        }
+        if (root.left) {
+          dfs(root.left)
+        }
+        ans.push(root.val)
+        if (root.right) {
+          dfs(root.right)
+        }
+    }
+    const ans = []
+    dfs(root)
+    return ans
+};
+```
+
+
+
 ### 96 不同的二叉搜索树   中等
+
+<img src="/Users/onlycat/Library/Application Support/typora-user-images/image-20220723100317112.png" alt="image-20220723100317112" style="zoom:50%; margin-left:0" />
+
+```js
+var numTrees = function(n) {
+    const G = new Array(n + 1).fill(0);
+    G[0] = 1;
+    G[1] = 1;
+
+    for (let i = 2; i <= n; ++i) {
+        for (let j = 1; j <= i; ++j) {
+            G[i] += G[j - 1] * G[i - j];
+        }
+    }
+    return G[n];
+};
+
+```
+
+
+
 ### 98 验证二叉搜索树   中等
+
+```js
+const helper = function (root, lower, upper) {
+  
+    if (root === null) {
+        return true
+    }
+    if (root.val <= lower || root.val >= upper){
+        return false
+    }
+    return helper(root.left, lower, root.val) && helper(root.right, root.val, upper)
+}
+var isValidBST = function(root) {
+    return helper(root, -Infinity, Infinity)
+};
+```
+
+
+
 ### 101 对称二叉树   简单
+
+```js
+const func = (p, q) =>  {
+    if (p === null && q === null) return true
+    if (p === null || q === null) return false
+    return p.val === q.val && func(p.left, q.right) && func(p.right, q.left)
+}
+var isSymmetric = function(root) {
+    return func(root, root)
+};
+```
+
+
+
 ### 102 二叉树的层序遍历   中等
+
+```js
+var levelOrder = function(root) {
+    const ret = [];
+    if (!root) {
+        return ret;
+    }
+
+    const q = [];
+    q.push(root);
+    while (q.length !== 0) {
+        const currentLevelSize = q.length;
+        ret.push([]);
+        for (let i = 1; i <= currentLevelSize; ++i) {
+            const node = q.shift();
+            ret[ret.length - 1].push(node.val);
+            if (node.left) q.push(node.left);
+            if (node.right) q.push(node.right);
+        }
+    }
+
+     return ret;
+};
+```
+
+
+
 ### 104二叉树的最大深度   简单
+
+```js
+var maxDepth = function(root) {
+    let count = 0
+    if (!root) {
+        return count;
+    }
+    const q = [];
+    q.push(root);
+    while (q.length !== 0) {
+        const currentLevelSize = q.length;
+        for (let i = 1; i <= currentLevelSize; ++i) {
+            let node = q.shift();
+            if (node.left) q.push(node.left);
+            if (node.right) q.push(node.right);
+        }
+        count++
+    }
+     return count;
+};
+```
+
+
+
 ### 105从前序与中序遍历序列构造二叉树   中等
+
+```js
+function TreeNode(val) {
+    this.val=val;
+    this.left=this.right=null;
+}
+var buildTree = function(preorder, inorder) {
+    if(preorder.length){
+        let head = new TreeNode(preorder.shift())
+        let index = inorder.indexOf(head.val);
+        head.left=buildTree(
+            preorder.slice(0,index),
+            inorder.slice(0,index)
+        )
+        head.right = buildTree(
+            preorder.slice(index),
+            inorder.slice(index+1)
+        )
+        return head;
+    }else{
+        return null;
+    }
+};
+```
+
+
+
 ### 114二叉树展开为链表   中等
+
+```js
+var flatten = function(root) {
+    let curr = root
+    while(curr !== null) {
+        if (curr.left !== null) {
+            // 左节点作为右节点
+            let next = curr.left
+            let predecessor = next
+            while (predecessor.right !== null) {
+                predecessor = predecessor.right
+            }
+            // 右节点放到左子树中最右的节点右边
+            predecessor.right = curr.right
+            curr.right = next
+            // 左节点制空
+            curr.left = null
+        }
+        curr = curr.right
+    }
+    return root
+};
+```
+
+
+
 ### 121 买卖股票的最佳时机     简单
+
+```js
+var maxProfit = function(prices) {
+    let min = prices[0]
+    let max = 0
+    for (let i = 1; i < prices.length; i++) {
+        min = Math.min(min, prices[i]) 
+        max = Math.max(max, prices[i] - min)
+    }
+    return max
+};
+```
+
+
+
 ### 124二叉树中的最大路径和     困难
+
+
+
 ### 128 最长连续序列     中等
+
+```js
+var longestConsecutive = function(nums: number[]): number {
+    // 设置set
+    let set: Set<number> = new Set(nums)
+    let ret = 0
+    // 元素遍历
+    for (const num of set) {
+        if (!set.has(num - 1)) {
+            let curNum = num + 1
+            let curCnt = 1
+            while(set.has(curNum)) {
+                curNum++
+                curCnt++
+            }
+            ret = Math.max(ret, curCnt)
+        }
+    }
+    return ret
+};
+```
+
+
+
 ### 136 只出现一次的数字     简单
+
+```typescript
+function singleNumber(nums: number[]): number {
+  	// 一个数异或0不变
+  	// 两个等数异或等于0
+  	// 两个不等数异或等于1
+    return nums.reduce((p, c) => p ^ c)
+};
+```
+
+
+
 ### 139单词拆分     中等
+
+```js
+function wordBreak(s: string, wordDict: string[]): boolean {
+    const n : number = s.length
+    const wordDictSet : Set<string> = new Set (wordDict)
+    const dp : Array<boolean> = new Array(n + 1).fill(false)
+    
+    dp[0] = true
+    for (let i = 1; i <= n; i++) {
+        for (let j = 0; j <= i; j++) {
+            if (dp[j] && wordDictSet.has(s.substr(j, i - j))) {
+                dp[i] = true
+                break
+            }
+        }
+    }
+    return dp[n]
+};
+```
+
+
+
 ### 141 环形链表     简单
+
+```js
+var hasCycle = function(head) {
+    if (head === null || head.next === null) return false
+    let slow = head, fast = head.next
+    while (slow !== fast) {
+        if (fast === null || fast.next === null) {
+            return false
+        }
+        slow = slow.next
+        fast = fast.next.next
+    }
+    return true
+};
+```
+
+
+
+### 142 环形链表川     中等
+
+```js
+var detectCycle = function(head) {
+    const visited = new Set()
+    while(head !== null) {
+        if (visited.has(head)) {
+            return head
+        }
+        visited.add(head)
+        head = head.next
+    }
+    return null
+};
+```
+
+
+
+### 146 LRU 缓存     中等
+
+```
+
+```
+
+
+
+### 148 排序链表     中等
+
+```js
+var sortList = function(head) {
+    if(head == null || head.next == null) return head
+    let fast = head.next
+    let slow = head
+    while (fast && fast.next) {
+        fast = fast.next.next
+        slow = slow.next
+    }
+    let mid = slow.next
+    slow.next = null
+    // console.log(slow, mid)
+    let left = sortList(head)
+    let right = sortList(mid)
+
+    let h = new ListNode(0)
+    let res = h
+    while (left && right){
+        if (left.val < right.val) {
+            // [h.next, left] = [left, left.next]
+            h.next = left
+            left = left.next
+        }
+        else {
+            // [h.next, right] = [right, right.next]
+            h.next = right
+            right = right.next
+        }
+        h = h.next
+    }
+    h.next = left ? left: right
+    return res.next
+};
+```
+
+
+
+### 152 乘积最大子数组     中等
+
+```js
+const maxProduct = function (nums) {
+    let ans = nums[0], 
+        maxValue = nums[0], 
+        minValue = nums[0], 
+        maxProduct = 0, 
+        minProduct = 0
+    for( let i = 1; i < nums.length; i++) {
+        maxProduct = nums[i] * maxValue
+        minProduct = nums[i] * minValue
+        // 更新最大值，最小值
+        maxValue = Math.max(maxProduct, minProduct, nums[i])
+        minValue = Math.min(maxProduct, minProduct, nums[i])
+        ans = Math.max(maxValue, ans)
+    }
+    return ans
+};
+```
+
+
+
+### 155 最小栈     中等
+
+```js
+var MinStack = function() {
+    this.x_stack = [];
+    this.min_stack = [Infinity];
+};
+
+MinStack.prototype.push = function(x) {
+    this.x_stack.push(x);
+    this.min_stack.push(Math.min(this.min_stack[this.min_stack.length - 1], x));
+};
+
+MinStack.prototype.pop = function() {
+    this.x_stack.pop();
+    this.min_stack.pop();
+};
+
+MinStack.prototype.top = function() {
+    return this.x_stack[this.x_stack.length - 1];
+};
+
+MinStack.prototype.getMin = function() {
+    return this.min_stack[this.min_stack.length - 1];
+};
+
+```
+
+
+
+### 160 相交链表     简单
+
+```js
+var getIntersectionNode = function(headA, headB) {
+    if (headA === null || headB === null) {
+        return null;
+    }
+    let pA = headA, pB = headB;
+    while (pA !== pB) {
+        pA = pA === null ? headB : pA.next;
+        pB = pB === null ? headA : pB.next;
+    }
+    return pA;
+};
+
+```
+
+
+
+### 169 多数元素     简单
+
+```js
+// hash,建议用排序
+var majorityElement = function(nums) {
+    const n = nums.length/2
+    let numsMap = new Map()
+    for (let num of nums) { 
+        if (!numsMap.has(num)) {
+            numsMap.set(num, 1)
+        }
+        else {
+            numsMap.set(num, numsMap.get(num) + 1)
+        }
+        if (numsMap.get(num) > n) {
+            return num
+        }
+    }
+};
+```
+
+
+
+### 198 打家劫舍     中等
+
+```js
+var rob = function(nums) {
+    if (!nums.length) {
+        return 0
+    }
+    const size = nums.length
+    if (size === 1) {
+        return nums[0]
+    }
+    let p = nums[0], q = Math.max(nums[0], nums[1])
+    for (let i = 2; i < size; i++) {
+        const next = Math.max(p + nums[i], q);
+        p = q
+        q = next
+    }
+    return q
+};
+```
+
+
+
+### 200岛屿数量     中等
+
+```js
+var numIslands = function(grid) {
+    const m = grid.length
+    if (!m) {
+        return 0
+    }
+    const n = grid[0].length
+    const d = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+    // 保存岛屿数量
+    let count = 0
+    // 判断所选元素是否在二维平面内
+    const inArea = function (x, y) {
+        return x >=0 && x < m && y >=0 && y < n
+    }
+    // 递归函数，深度优先遍历，从grid[i][j]开始移动，将所有链接的陆地标记为访问过
+    const dfs = function (grid, i, j) {
+        grid[i][j] = '0'
+        for (let k = 0; k < 4; k++) {
+            const newX = i + d[k][0]
+            const newY = j + d[k][1]
+            inArea(newX, newY) && grid[newX][newY] == 1 && dfs(grid, newX, newY)
+        }
+        return
+    }
+
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (grid[i][j] == 1) {
+                count++
+                dfs(grid, i, j)
+            }
+        }
+    }
+    return count
+};
+```
+
+
+
+### 206反转链表     简单
+
+```js
+var reverseList = function(head) {
+    let prev = null
+    let curr = head
+    while(curr) {
+        let next = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next
+    }
+    return prev
+};
+```
+
+
+
+### 207 课程表     中等
+
+```js
+/**
+ * @param {number} numCourses
+ * @param {number[][]} prerequisites
+ * @return {boolean}
+ */
+
+var canFinish = function(numCourses, prerequisites) {                      
+    let indegree = new Array(numCourses).fill(0)       // 顶点的入度
+    let dirctMap = []                                  //邻接表(在dfs遍历的时候用得到)
+    let result = 0                                     //正规的拓扑排序应该得到一个数组，内容是顺序表，为了节省内存用数量替代
+    let ifFind = new Array(numCourses).fill(0)         //用来记录找到了哪些节点
+    for(let i = 0;i<numCourses;i++){                   //初始化邻接表
+        dirctMap.push([])
+    }
+    for(let i = 0,l = prerequisites.length;i<l;i++){    //初始化邻接表
+        let item = prerequisites[i];
+        indegree[item[0]]++                  //记录该节点的入度
+        dirctMap[item[1]].push(item[0])      //在邻接表里记录该节点
+    }
+    for(let i = 0;i<numCourses;i++){         //循环遍历所有节点
+            dfs(dirctMap,i,0)
+    }
+    /*
+    *dirctMap : 要遍历的邻接表
+    *index : 当前节点
+    *status : 是否第一层
+    */
+    function dfs(dirctMap,index,status){
+        if(status&&ifFind[index]===1){  //如果不是第一层并且该节点已经被找到过了，那么说明遇到了环路，则提前结束，返回结果
+            return false
+        }
+        if(ifFind[index] === 0&& indegree[index]===0){//判断入度为0并且违背找到过的节点可以进入
+            result++            //找到一个节点，总数量+1
+            ifFind[index] = 1;  //标记该节点被找到
+            dirctMap[index].forEach(i=>{    //广度遍历该节点的兄弟节点
+                indegree[i]--               //由于原来的节点被‘移除了’所以兄弟节点的入度要减一
+                dfs(dirctMap,i,1)
+            })
+        }
+    }
+    return result === numCourses            //如果最后找到的节点数量小于总数的话就说明有环路 
+                                            //(因为有环路的话在剥离过程中入度始终不会为0，一直不满足条件，所以不会被找到)
+}
+```
+
+
+
+### 208实现 Trie (前缀树）   中等  
+
+```
+
+```
+
+
+
+### 215数组中的第K个最大元素  中等   
+### 221 最大正方形     中等
+
+```js
+var maximalSquare = function (matrix) {
+    const m = matrix.length
+    if (m === 0) {
+        return 0
+    }
+    const n = matrix[0].length
+    let maxWidth = 0
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (matrix[i][j] === '1') {
+                matrix[i][j] = (i == 0 || j == 0) ? 1 : Math.min(matrix[i-1][j-1],matrix[i][j-1],matrix[i-1][j]) + 1
+                maxWidth = Math.max(maxWidth, matrix[i][j])
+            } else {
+                matrix[i][j] = 0
+            }
+        }
+    }
+    return maxWidth * maxWidth
+};
+```
+
+
+
+### 226翻转二叉树     简单
+
+```js
+var invertTree = function(root) {
+    if (root === null) {
+        return null;
+    }
+    const left = invertTree(root.left);
+    const right = invertTree(root.right);
+    root.left = right;
+    root.right = left;
+    return root;
+};
+```
+
+
+
+### 34 回文链表     简单
+
+```js
+var isPalindrome = function(head) {
+    // 这句可有可无，毕竟题目中说了链表长度至少为1
+    if(!head) return true;
+    let slow = head, fast = head.next;
+    while(fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+    let back = reverseList(slow.next);
+    while(back) {
+        if(head.val !== back.val) {
+            return false;
+        }
+        head = head.next;
+        back = back.next;
+    }
+    return true;
+};
+function reverseList(head){
+    if(!head || !head.next) return head;
+    const r = reverseList(head.next);
+    head.next.next = head;
+    head.next = null;
+    return r;
+}
+
+```
+
+
+
+### 236 二叉树的最近公共祖先  中等   
+
+```js
+var lowestCommonAncestor = function(root, p, q) {
+    let ans = null
+    const dfs = (root, p, q) => {
+        if (root === null) return false
+        const lson = dfs(root.left, p, q)
+        const rson = dfs(root.right, p, q)
+        if ((lson && rson) || (root.val === p.val || root.val === q.val) && (lson || rson) ) {
+            ans = root
+        }
+        return lson || rson || root.val === p.val || root.val === q.val
+
+    }
+    dfs (root, p, q)
+    return ans
+};
+```
+
+
+
+### 238除自身以外数组的乘积   中等  
+
+```
+var productExceptSelf = function(nums: number[]): number[] {
+    const length = nums.length;
+    const answer = new Array<number>(length);
+
+    // answer[i] 表示索引 i 左侧所有元素的乘积
+    // 因为索引为 '0' 的元素左侧没有元素， 所以 answer[0] = 1
+    answer[0] = 1;
+    for (let i = 1; i < length; i++) {
+        answer[i] = nums[i - 1] * answer[i - 1];
+    }
+
+    // R 为右侧所有元素的乘积
+    // 刚开始右边没有元素，所以 R = 1
+    let R = 1;
+    for (let i = length - 1; i >= 0; i--) {
+        // 对于索引 i，左边的乘积为 answer[i]，右边的乘积为 R
+        answer[i] = answer[i] * R;
+        // R 需要包含右边所有的乘积，所以计算下一个结果时需要将当前值乘到 R 上
+        R *= nums[i];
+    }
+    return answer;
+};
+```
+
+
+
+### 239 滑动窗口最大值     困难
+
+```js
+var maxSlidingWindow = function(nums, k) {
+    if (!nums.length) return []
+
+    let ans = [],
+        windows = []
+
+    for (let i = 0; i < nums.length; i++) {
+        if (i >= k && windows[0] <= i - k) windows.shift()
+        while(windows.length && nums[windows[windows.length-1]] <= nums[i]) windows.pop()
+        windows.push(i)
+        if (i >= k - 1) ans.push(nums[windows[0]])
+    }
+    
+    return ans
+};
+
+```
+
+
+
+### 240搜索二维矩阵     中等
+
+```js
+var searchMatrix = function(matrix, target) {
+  if (matrix.length === 0 || matrix[0].length === 0) return false;
+  
+  let ans = false,
+      rowLimit = matrix.length,
+      colLimit = matrix[0].length;
+  
+  let row = rowLimit - 1, col = 0;
+  
+  while (true) {
+    if (row < 0 || col >= colLimit) break;
+    
+    let curr = matrix[row][col];
+    
+    if (curr === target) {
+      ans = true;
+      break;
+    }
+    
+    if (target > curr) col++;
+    if (target < curr) row--;
+  }
+  
+  return ans;
+};
+```
+
+
+
+### 253会议室     中等 VIP
+
+```
+
+```
+
+
+
+### 279 完全平方数    中等
+
+```js
+var numSquares = function(n) {
+    const dp = new Array(n + 1).fill(0)
+    for (let i = 1; i <= n; i++) {
+        let minn = Number.MAX_VALUE
+        for (let j = 1; j * j <= i; j++) {
+            minn = Math.min(minn, dp[i - j*j])
+        }
+        dp[i] = minn + 1
+    }
+    return dp[n]
+};
+```
+
+
+
+### 283移动零    简单
+
+```js
+var moveZeroes = function(nums) {
+    const swap = function(nums, a, b) {
+        [nums[a], nums[b]] = [nums[b], nums[a]]
+    }
+    let Index0 = -1
+    for (let i = 0; i < nums.length; i++) {
+        if (nums[i] !== 0) {
+            if (Index0 !== -1 ) {
+                swap(nums, Index0, i)
+                Index0++
+            }
+        } else {
+            if (Index0 === -1 ) {
+                Index0 = i
+            }
+        }
+    }
+    return nums
+};
+```
+
+
+
+### 287 寻找重复数    中等
+
+```js
+var findDuplicate = function(nums) {
+    let slow  = 0, fast = 0;
+    do {
+        slow = nums[slow]
+        fast = nums[nums[fast]] 
+    } while (slow != fast)
+    slow = 0
+    while (slow != fast) {
+        slow = nums[slow]
+        fast = nums[fast]
+    }
+    return slow
+};
+```
+
+
+
+### 297二叉树的序列化与反序列化    困难
+### 300 最长递增子序列    中等
+
+```js
+var lengthOfLIS = function(nums) {
+    if(nums.length === 0){
+        return 0;
+    }
+    let length = nums.length, max = 1
+    let dp = new Array(length).fill(1)
+    for (let i = 1; i < length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1)
+                max = Math.max(dp[i], max)
+            }
+        }
+    }
+    return max
+};
+```
+
+
+
+### 301删除无效的括号    困难
+
+```
+
+```
+
+
+
+### 309 最佳买卖股票时机含冷冻期    中等
+
+```js
+var maxProfit = function(prices) {
+    if(prices.length === 0){
+        return 0;
+    }
+    let length = prices.length, 
+        f0 = -prices[0], // 持有股票
+        f1 = 0,  // 不持有，并处于冷冻
+        f2 = 0;  // 不持有，不处于冷冻
+    for (let i = 1; i < length; i++) {
+        let newf0 = Math.max(f0, f2 - prices[i]),
+            newf1 = f0 + prices[i],
+            newf2 = Math.max(f1, f2);
+        [f0, f1, f2] = [newf0, newf1, newf2]
+    }
+    return Math.max(f1, f2)
+};
+```
+
+
+
+### 312戳气球    困难
+
+```
+
+```
+
+
+
+### 322 零钱兑换    中等
+
+```
+var coinChange = function(coins, amount) {
+    const dp = new Array(amount + 1).fill(Infinity)
+    dp[0] = 0
+    for (let coin of coins) {
+        for (let x = coin; x < amount + 1; x++) {
+            dp[x] = Math.min(dp[x], dp[x - coin] + 1)
+        }
+    }
+    return dp[amount] === Infinity ? -1 : dp[amount]
+};
+```
+
+
+
+### 337 打家劫舍川    中等
+
+```js
+var rob = function(root) {
+    const dfs = (node) => {
+        if (node === null) {
+            return [0, 0];
+        }
+        const l = dfs(node.left);
+        const r = dfs(node.right);
+        const selected = node.val + l[1] + r[1];
+        const notSelected = Math.max(l[0], l[1]) + Math.max(r[0], r[1]);
+        return [selected, notSelected];
+    }
+    
+    const rootStatus = dfs(root);
+    return Math.max(rootStatus[0], rootStatus[1]);
+}; 
+```
+
+
+
+### 338 比特位计数    简单
+
+```js
+var countBits = function(n) {
+    const bits = new Array(n + 1).fill(0);
+    for (let i = 1; i <= n; i++) {
+        bits[i] = bits[i & (i - 1)] + 1; // i & i-1 比i少一个1，并且比i小
+    }
+    return bits;
+};
+```
+
+
+
+### 347 前K个高频元素    中等
+
+```
+let topKFrequent = function(nums, k) {
+    // 利用Map来记录key-整数和value-频率的关系
+    let map = new Map()
+    nums.map((num) => {
+        if (map.has(num)) map.set(num, map.get(num) + 1)
+        else map.set(num, 1)
+    })
+    
+    // 如果元素数量小于等于k -> 直接返回字典key-整数
+    if(map.size <= k) {
+        return [...map.keys()]
+    }
+
+    // 返回桶排序结果
+    // return bucketSort(map, k)
+    return [...map.keys()].sort((a, b) => 
+        map.get(b) - map.get(a)
+    ).slice(0, k)
+};
+```
+
+
+
+### 394字符串解码    中等
+
+```js
+var decodeString = function(s) {
+    // 用两个栈来存放当前状态，前者是重复次数，后者是累积字符串
+    let repetStack=[],resStack=[];
+    //拼接字符串
+    let resStr = "";
+    //表示重复次数
+    let repet = 0;
+    // 遍历s
+    for(let i=0;i<s.length;i++){
+        let cur = s.charAt(i);
+        if(cur == '['){
+            //双双压入栈中,保存当前状态
+            repetStack.push(repet);
+            resStack.push(resStr);
+            //置空，准备下面的累积
+            repet = 0;
+            resStr = "";
+        }else if(cur == ']'){
+            // 取出当前重复次数栈中的值，也就是当前字符串的重复次数
+            let count = repetStack.pop();
+            // 根据重复次数生成重复字符串，赋值给temp，和resStr拼接
+            let temp = "";
+            for(let i = 0;i<count;i++){
+                temp += resStr;
+            }
+            // 和前面已经求得的字符串进行拼接
+            resStr = resStack.pop() + temp;
+        }else if(cur>='0' && cur<='9'){
+            // repet累积
+            repet = repet*10 + (cur-'0');
+        }else{
+            //字符累积
+            resStr += cur;
+        }
+    }
+    return resStr;
+};
+```
+
+
+
+### 399 除法求值    中等
+
+```
+
+```
+
+
+
+### 406根据身高重建队列    中等
+
+```js
+var reconstructQueue = function(people) {
+    if (!people || !people.length) return [];
+    people.sort((a, b) => a[0] === b[0] ? a[1] - b[1] : b[0] - a[0]);
+    
+    const res = [];
+    people.forEach(item => {
+        res.splice(item[1], 0, item); // 插入到k对应的位置
+    })
+    return res;
+};
+```
+
+
+
+### 416分割等和子集    中等
+
+```
+// 太难了
+```
+
+
+
+### 437 路径总和川    中等
+
+```js
+var pathSum = function(root, targetSum) {
+    if (root == null) {
+        return 0;
+    }
+    
+    let ret = rootSum(root, targetSum);
+    ret += pathSum(root.left, targetSum);
+    ret += pathSum(root.right, targetSum);
+    return ret;
+};
+
+const rootSum = (root, targetSum) => {
+    let ret = 0;
+
+    if (root == null) {
+        return 0;
+    }
+    const val = root.val;
+    if (val === targetSum) {
+        ret++;
+    } 
+
+    ret += rootSum(root.left, targetSum - val);
+    ret += rootSum(root.right, targetSum - val);
+    return ret;
+}
+```
+
+
+
+### 438 找到字符串中所有字母异位词    中等
+
+```js
+var findAnagrams = function (s, p) {
+    const pLen = p.length
+    const res = [] // 返回值
+    const map = new Map() // 存储 p 的字符
+    for (let item of p) {
+        map.set(item, map.get(item) ? map.get(item) + 1 : 1)
+    }
+    // 存储窗口里的字符情况
+    const window = new Map()
+    let valid = 0 // 有效字符个数
+
+    for (let i = 0; i < s.length; i++) {
+        const right = s[i]
+        // 向右扩展
+        window.set(right, window.get(right) ? window.get(right) + 1 : 1)
+        // 扩展的节点值是否满足有效字符
+        if (window.get(right) === map.get(right)) {
+            valid++
+        }
+        if (i >= pLen) {
+            // 移动窗口 -- 超出之后，收缩回来， 这是 pLen 长度的固定窗口
+            const left = s[i - pLen]
+            // 原本是匹配的，现在移出去了，肯定就不匹配了
+            if (window.get(left) === map.get(left)) {
+                valid--
+            }
+            window.set(left, window.get(left) - 1)
+        }
+        // 如果有效字符数量和存储 p 的map 的数量一致，则当前窗口的首字符保存起来
+        if (valid === map.size) {
+            res.push(i - pLen+1)
+        }
+    }
+    return res
+};
+```
+
+
+
+### 448找到所有数组中消失的数字    简单
+
+```js
+var findDisappearedNumbers = function(nums) {
+    const n = nums.length;
+    for (const num of nums) {
+        const x = (num - 1) % n;
+        nums[x] += n;
+    }
+    const ret = [];
+    for (const [i, num] of nums.entries()) {
+        if (num <= n) {
+            ret.push(i + 1);
+        }
+    }
+    return ret;
+};
+```
+
+
+
+### 461 汉明距离    简单
+
+```js
+var hammingDistance = function(x, y) {
+    let s = x ^ y, ret = 0;
+    while (s != 0) {
+        ret += s & 1;
+        s >>= 1;
+    }
+    return ret;
+};
+```
+
+
+
+### 494目标和    中等
+
+```
+var findTargetSumWays = function(nums, target) {
+    let sum = 0;
+    for (const num of nums) {
+        sum += num;
+    }
+    const diff = sum - target;
+    if (diff < 0 || diff % 2 !== 0) {
+        return 0;
+    }
+    const neg = Math.floor(diff / 2);
+    const dp = new Array(neg + 1).fill(0);
+    dp[0] = 1;
+    for (const num of nums) {
+        for (let j = neg; j >= num; j--) {
+            dp[j] += dp[j - num];
+        }
+    }
+    return dp[neg];
+};
+```
+
+
+
+### 538 把二叉搜索树转换为累加树    中等
+
+```js
+var convertBST = function(root) {
+    const dfs = (node) => {
+        if (node === null) {
+            return;
+        }
+        dfs(node.right);
+        total += node.val
+        node.val = total
+        dfs(node.left);
+    }
+    let total = 0
+    dfs(root)
+    return root  
+};
+```
+
+
+
+### 543二叉树的直径    简单
+
+```js
+var diameterOfBinaryTree = function(root) {
+    if(root == null || (root.left == null && root.right == null)) return 0
+    let res = 0
+    function dfs(root) {
+        if(root == null) return 0
+        let left = dfs(root.left)
+        let right = dfs(root.right)
+        res = Math.max(res, left + right + 1)
+        return Math.max(left, right) + 1
+    }
+    dfs(root)
+    return res - 1
+};
+```
+
+
+
+### 560 和为K的子数组    中等
+
+```js
+// 非最优
+var subarraySum = function(nums, k) {
+    let count = 0
+    for (let i = 0; i < nums.length; i++) {
+        let sum = 0
+        for (let j = i; j >= 0; j--) {
+            sum += nums[j]
+            if (sum === k) {
+                count++
+            }
+        }
+    }
+    return count
+};
+```
+
+
+
+### 581 最短无序连续子数组    中等
+
+```js
+// 不是很理解这个思路
+var findUnsortedSubarray = function(nums) {
+    const n = nums.length;
+    let maxn = -Number.MAX_VALUE, right = -1;
+    let minn = Number.MAX_VALUE, left = -1;
+    for (let i = 0; i < n; i++) {
+        if (maxn > nums[i]) {
+            right = i;
+        } else {
+            maxn = nums[i];
+        }
+        if (minn < nums[n - i - 1]) {
+            left = n - i - 1;
+        } else {
+            minn = nums[n - i - 1];
+        }
+    }
+    return right === -1 ? 0 : right - left + 1;
+};
+```
+
+
+
+### 617 合并二叉树    简单
+
+```js
+var mergeTrees = function(t1, t2) {
+    if (t1 == null) return t2
+    if (t2 == null) return t1
+    let merged = new TreeNode(t1.val + t2.val)
+    merged.left = mergeTrees(t1.left, t2.left)
+    merged.right = mergeTrees(t1.right, t2.right)
+    return merged
+};
+```
+
+
+
+### 621 任务调度器    中等 不懂
+
+```
+var leastInterval = function(tasks, n) {
+    const freq = _.countBy(tasks);
+    console.log(freq)
+    // 最多的执行次数
+    const maxExec = Math.max(...Object.values(freq));
+    // 具有最多执行次数的任务数量
+    let maxCount = 0;
+    Object.values(freq).forEach(v => {
+        if (v === maxExec) {
+            maxCount++;
+        }
+    })
+
+    return Math.max((maxExec - 1) * (n + 1) + maxCount, tasks.length);
+};
+```
+
+
+
+### 647回文子串    中等
+
+```js
+var countSubstrings = function(s) {
+    const n = s.length;
+    let ans = 0;
+    const helper = (a, b) => {
+        while(a >= 0 && b < s.length && s[a] === s[b]) {
+                ++ans;
+                --a;
+                ++b;
+            }
+        }
+    for (let i = 0; i < n; i++) {
+        if (i !== 0) {
+            helper(i - 1, i)
+        }
+        helper(i, i)
+    }
+    return ans;
+};
+```
+
+
+
+### 739 每日温度    中等
+
+```js
+var dailyTemperatures = function(T) {
+    let res = new Array(T.length).fill(0),
+        stack = [];
+    for(let i = 0; i < T.length; i++){
+        while(stack.length > 0 && stack[stack.length - 1][0] < T[i]){
+            res[stack[stack.length - 1][1]] = i - stack[stack.length - 1][1];
+            stack.pop();
+        }
+        stack.push([T[i], i]);
+    }
+    return res;
+};
+```
+
