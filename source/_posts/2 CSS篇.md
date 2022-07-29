@@ -620,7 +620,7 @@ z-index属性在下列情况下会失效：
 
 一般两栏布局指的是**左边一栏宽度固定，右边一栏宽度自适应**，两栏布局的具体实现：
 
-浮动+margin、浮动+BFC、flex、绝对定位+margin、绝对定位
+**浮动+margin、浮动+BFC、flex、绝对定位+margin、绝对定位**
 
 - 利用浮动，将左边元素宽度设置为200px，并且设置向左浮动。将右边元素的margin-left设置为200px，宽度设置为auto（默认为auto，撑满整个父元素）。
 
@@ -808,6 +808,12 @@ z-index属性在下列情况下会失效：
 - 圣杯布局，利用浮动和负边距来实现。父级元素设置左右的 padding，三列均设置向左浮动，中间一列放在最前面，宽度设置为父级元素的宽度，因此后面两列都被挤到了下一行，通过设置 margin 负值将其移动到上一行，再利用相对定位，定位到两边。
 
 ```css
+ <div class="outer">
+        <div class="main col">Main</div>
+        <div class="left col">Left</div>
+        <div class="right col">Right</div>
+    </div>
+
 .outer {
   height: 100px;
   padding-left: 100px;
@@ -850,6 +856,14 @@ z-index属性在下列情况下会失效：
 - 双飞翼布局，双飞翼布局相对于圣杯布局来说，左右位置的保留是通过中间列的 margin 值来实现的，而不是通过父元素的 padding 来实现的。本质上来说，也是通过浮动和外边距负值来实现的。
 
 ```css
+<div class="outer">
+        <div class="main col ">
+            <div class="main_inner">Main</div>
+        </div>
+        <div class="left col ">Left</div>
+        <div class="right col ">Right</div>
+    </div>
+
 .outer {
   height: 100px;
 }
@@ -886,6 +900,86 @@ z-index属性在下列情况下会失效：
   height: 100px;
 }
 ```
+
+- 中间固定，两边自适应
+
+```js
+// 方案1 flex
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			*{
+				margin:0;
+				padding:0;
+			}
+			.wrap{
+				display:flex;
+				flex-direction:row;
+				margin-top:20px;
+			}
+			.center{
+				width:800px;
+				text-align:center;
+				background:#ccc;
+			}
+			.left,.right{
+				/*flex-grow 属性用于设置或检索弹性盒的扩展比率。*/
+	                        flex-grow: 1;
+	                        line-height: 30px;
+	                        background:red;
+	                }
+		</style>
+	</head>
+	<body>
+		<div class="wrap">
+			<div class="left">left</div>
+			<div class="center">center</div>
+			<div class="right">right</div>
+		</div>
+	</body>
+</html>
+
+// 方案二 calc
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style type="text/css">
+			#container{
+				height:200px;
+				width: 100%;
+			}
+			
+			#left,#right{
+				float:left;
+				background-color:#ccc;
+				height:100%;
+				width: calc(50% - 500px);
+			}
+			#center{
+				float:left;
+				background-color:yellow;
+				height:100%;
+				width:1000px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container">
+			<div id="left">left</div>
+			<div id="center">center</div>
+			<div id="right">right</div>
+		</div>
+	</body>
+</html>
+
+```
+
+
 
 ### 5. 水平垂直居中的实现
 

@@ -212,11 +212,11 @@ typeof null 的结果是Object。
 instanceof 运算符用于判断构造函数的 prototype 属性是否出现在对象的原型链中的任何位置。
 
 ```js
-function myInstanceof(left, right) {
+function myInstanceof(obj, constructor) {
   // 获取对象的原型
-  let proto = Object.getPrototypeOf(left)
+  let proto = Object.getPrototypeOf(obj)
   // 获取构造函数的 prototype 对象
-  let prototype = right.prototype; 
+  let prototype = constructor.prototype; 
  
   // 判断构造函数的 prototype 对象是否在对象的原型链上
   while (true) {
@@ -305,7 +305,6 @@ function numberepsilon(arg1,arg2){
 }        
 
 console.log(numberepsilon(0.1 + 0.2, 0.3)); // true
-复制代码
 ```
 
 ### 8. 如何获取安全的 undefined 值？
@@ -603,7 +602,6 @@ let outObj = {
 let newObj = {...outObj}
 newObj.inObj.a = 2
 console.log(outObj) // {inObj: {a: 2, b: 2}}
-复制代码
 ```
 
 Object.assign():
@@ -615,7 +613,6 @@ let outObj = {
 let newObj = Object.assign({}, outObj)
 newObj.inObj.a = 2
 console.log(outObj) // {inObj: {a: 2, b: 2}}
-复制代码
 ```
 
 可以看到，两者都是浅拷贝。
@@ -1329,7 +1326,7 @@ JSON 是一种基于文本的轻量级的数据交换格式。它可以被任何
 
 在项目开发中，使用 JSON 作为前后端数据交换的方式。在前端通过将一个符合 JSON 格式的数据结构序列化为 JSON 字符串，然后将它传递到后端，后端通过 JSON 格式的字符串解析后生成对应的数据结构，以此来实现前后端数据的一个传递。
 
-因为 JSON 的语法是基于 js 的，因此很容易将 JSON 和 js 中的对象弄混，但是应该注意的是 JSON 和 js 中的对象不是一回事，JSON 中对象格式更加严格，比如说在 JSON 中属性值不能为函数，不能出现 NaN 这样的属性值等，因此大多数的 js 对象是不符合 JSON 对象的格式的。
+因为 JSON 的语法是基于 js 的，因此很容易将 JSON 和 js 中的对象弄混，但是应该注意的是 JSON 和 js 中的对象不是一回事，JSON 中对象格式更加严格，比如说在 JSON 中属性值**不能为函数**，不能出现 **NaN** 这样的属性值等，因此大多数的 js 对象是不符合 JSON 对象的格式的。
 
 在 js 中提供了两个函数来实现 js 数据结构和 JSON 格式的转换处理，
 
@@ -1497,7 +1494,7 @@ Array.from(arrayLike);
 | 运算符 | 描述 | 运算规则                                                 |
 | ------ | ---- | -------------------------------------------------------- |
 | `&`    | 与   | 两个位都为1时，结果才为1                                 |
-| `      | `    | 或                                                       |
+| `      | `    | 或                                                       |又一个为1就为1|
 | `^`    | 异或 | 两个位相同为0，相异为1                                   |
 | `~`    | 取反 | 0变1，1变0                                               |
 | `<<`   | 左移 | 各二进制位全部左移若干位，高位丢弃，低位补0              |
@@ -1700,40 +1697,6 @@ function foo(){
 
 - DOM 指的是文档对象模型，它指的是把文档当做一个对象，这个对象主要定义了处理网页内容的方法和接口。
 - BOM 指的是浏览器对象模型，它指的是把浏览器当做一个对象来对待，这个对象主要定义了与浏览器进行交互的方法和接口。BOM的核心是 window，而 window 对象具有双重角色，它既是通过 js 访问浏览器窗口的一个接口，又是一个 Global（全局）对象。这意味着在网页中定义的任何对象，变量和函数，都作为全局对象的一个属性或者方法存在。window 对象含有 location 对象、navigator 对象、screen 对象、history对象等子对象，并且 DOM 的最根本的对象 document 对象也是 BOM 的 window 对象的子对象。
-
-### 14. 对类数组对象的理解，如何转化为数组
-
-一个拥有 length 属性和若干索引属性的对象就可以被称为类数组对象，类数组对象和数组类似，但是不能调用数组的方法。常见的类数组对象有 arguments 和 DOM 方法的返回结果，函数参数也可以被看作是类数组对象，因为它含有 length属性值，代表可接收的参数个数。
-
-常见的类数组转换为数组的方法有这样几种：
-
-- 通过 call 调用数组的 slice 方法来实现转换
-
-```
-Array.prototype.slice.call(arrayLike);
-复制代码
-```
-
-- 通过 call 调用数组的 splice 方法来实现转换
-
-```
-Array.prototype.splice.call(arrayLike, 0);
-复制代码
-```
-
-- 通过 apply 调用数组的 concat 方法来实现转换
-
-```
-Array.prototype.concat.apply([], arrayLike);
-复制代码
-```
-
-- 通过 Array.from 方法来实现转换
-
-```
-Array.from(arrayLike);
-复制代码
-```
 
 ### 15. escape、encodeURI、encodeURIComponent 的区别
 

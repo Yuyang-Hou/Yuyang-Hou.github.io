@@ -349,41 +349,43 @@ var lowestCommonAncestor = function(root, p, q) {
 
 #### 剑指 Offer 10- I. 斐波那契数列 2430
 
+`注意MOD，看题`
+
 ```js
 var fib = function(n) {
+    const MOD  = 1000000007
     if (n < 2) {
         return n
     }
-    const MOD = 1000000007
-    let p = 0,
-        q = 0,
-        r = 1
-    for(let i = 2; i <= n; i++) {
-        [q, r] = [r, (q + r) % MOD]
+    let prev = 0, cur = 1;
+    for (let i = 2; i <= n; i++) {
+        [cur, prev] = [(cur + prev) % MOD, cur]
     }
-    return r
+    return cur
 };
 
 ```
 
 #### 剑指 Offer 10-I. 青蛙跳台阶问题      1782
 
+`注意初始点和斐波那契不一样，也就是dp[0] = 1`
+
 ```js
 var numWays = function(n) {
-    let dp = [1, 1]
+    // dp[i] = dp[i - 1] + dp [i -2]
+    const MOD = 1000000007
     if (n < 2) return 1
+    let prev = 1, cur = 1
     for (let i = 2; i <= n; i++) {
-        let temp = (dp[0] + dp[1]) % 1000000007
-        dp[0] = dp[1]
-        dp[1] = temp
+        [cur, prev] = [(cur + prev) % MOD, cur]
     }
-    return dp[1]
+    return cur
 };
 ```
 
 
 
-#### 剑指 Offer 13. 机器人的运动范围      2263
+#### 剑指 Offer 13. 机器人的运动范围      2263 （bfs）
 
 地上有一个m行n列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
 
@@ -396,7 +398,8 @@ const digitsum = function(n) {
   }
   return ans
 }
- 
+ // 这里是bfs的方法，设置一个标志位记录是否
+// 
 var movingCount = function(m, n, k) {
   const q = new Array()
   const arr = new Array(m).fill().map(_ => new Array(n).fill(0))
@@ -429,7 +432,26 @@ https://leetcode.cn/problems/jian-sheng-zi-lcof/
 
 给你一根长度为 n 的绳子，请把绳子剪成整数长度的 m 段（m、n都是整数，n>1并且m>1），每段绳子的长度记为 k[0],k[1]...k[m-1] 。请问 k[0]*k[1]*...*k[m-1] 可能的最大乘积是多少？例如，当绳子的长度是8时，我们把它剪成长度分别为2、3、3的三段，此时得到的最大乘积是18。
 
+`7.28字节一面考到`
+
+`定义子问题也就是状态转移方程，我之前想找到的是dp[i] 和dp[i - 1] 的联系，但这里，并没有什么联系，但是，如果dp[i]这里表示的是长度为i时最大乘积，那么，在把n分成j和i两段的时候，dp[i]这里肯定更大一些`
+
+
+
 ```js
+// 动态规划，
+var cuttingRope = function (n) {
+    let dp = new Array(n + 1).fill(1)
+    // 7.29二刷写成了i < n
+    for (let i = 3; i <= n; i++) {
+        for (let j = 1; j < i; j++) {
+            dp[i] = Math.max(dp[i], j * dp[i - j], j * (i - j))
+        }
+    }
+    return dp[n]
+};
+
+// 数学推导
 var cuttingRope = function(n) {
     if (n <= 3) {return n - 1} 
     const a = Math.floor(n / 3) 
@@ -448,6 +470,24 @@ var cuttingRope = function(n) {
 
 #### 剑指 Offer 14-川1. 剪绳子！      666
 
+不推荐动态规划了，需要对结果取模
+
+```js
+var cuttingRope = function(n) {
+    const MOD = 1000000007
+    if (n < 4) return n - 1
+    let ret = 1
+    while(n > 4) {
+        n = n - 3
+        ret = 3 * ret % MOD
+    }
+    ret = ret * n % MOD
+    return ret
+};
+```
+
+
+
 #### 剑指 Offer 19.正则表达式匹配      597 口
 
 #### 剑指 Offer 42. 连续子数组的最大和      1976
@@ -456,7 +496,7 @@ var cuttingRope = function(n) {
 输出: 6
 解释: 连续子数组 [4,-1,2,1] 的和最大，为 6。`
 
-```
+```js
 var maxSubArray = function(nums) {
     let pre = 0, maxAns = nums[0]
     nums.forEach((x) => {
@@ -465,7 +505,16 @@ var maxSubArray = function(nums) {
     })
     return maxAns
 };
-
+// 7.29三刷
+var maxSubArray = function(nums) {
+    let prev = 0, cur = nums[0], length = nums.length, max = nums[0];
+    for (let i = 0; i < length; i++) {
+        cur = prev > 0 ? prev + nums[i] : nums[i]
+        prev = cur
+        max = Math.max(cur, max)
+    }
+    return max
+};
 ```
 
 
@@ -497,6 +546,22 @@ var translateNum = function(num) {
             }
     }
     return dp[dp.length-1]
+};
+
+// 7.29二刷（看题解）
+var translateNum = function(num) {
+    if (num < 10) return 1
+    num = num + ''
+    const dp = [1, 1]
+    for (let i = 1; i < num.length; i++) {
+        let temp = parseInt(num.slice(i - 1, i + 1))
+        if (temp >= 10 && temp <= 25) {
+            dp[i + 1] = dp[i] + dp[i - 1]
+        } else {
+            dp[i + 1] = dp[i]
+        }
+    }
+    return dp[dp.length - 1]
 };
 
 ```
@@ -531,6 +596,24 @@ var maxValue = function(grid) {
     return dp[grid.length-1][grid[0].length-1];
 };
 
+// 7.29二刷，注意区分行和列，简单的说，m是哪一行，n是哪一列，
+var maxValue = function(grid) {
+    const m = grid.length, n = grid[0].length
+    const dp = new Array(m).fill().map(_ => new Array(n).fill(0))
+    dp[0][0] = grid[0][0]
+    for (let i = 1; i < n; i++) {
+        dp[0][i] = grid[0][i] + dp[0][i-1]
+    }
+    for (let j = 1; j < m; j++) {
+        dp[j][0] = grid[j][0] + dp[j - 1][0]
+    }
+    for (let i = 1; i < m; i++) {
+        for (let j = 1; j < n; j++) {
+            dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]) + grid[i][j]
+        }
+    }
+    return dp[m - 1][n - 1]
+};
 ```
 
 
@@ -558,6 +641,21 @@ var nthUglyNumber = function(n) {
     return dp[n];
 };
 
+// 7.29 二刷，看题解
+var nthUglyNumber = function(n) {
+    let dp = new Array(n + 1).fill(0)
+    dp[1] = 1
+    let p2 = 1, p3 = 1, p5 = 1
+    for (let i = 2; i <= n; i++) {
+        const num2 = dp[p2] * 2, num3 = dp[p3] * 3, num5 = dp[p5] * 5;
+        dp[i] = Math.min(num2, num3, num5)
+        if (dp[i] === num2) p2++
+        if (dp[i] === num3) p3++
+        if (dp[i] === num5) p5++
+    }
+    return dp[n]
+};
+
 ```
 
 
@@ -566,7 +664,7 @@ var nthUglyNumber = function(n) {
 
 不是很懂，算了
 
-```
+```js
 class Solution:
     def dicesProbability(self, n: int) -> List[float]:
         dp = [1 / 6] * 6
@@ -595,6 +693,18 @@ var maxProfit = function(prices) {
     return maxprofit;
 };
 
+// 7.29二刷，无问题，语法不够精简
+var maxProfit = function(prices) {
+    let length = prices.length
+    if (length === 0) return 0
+    let ret = 0, 
+        minVal = prices[0]
+    for (let i = 1; i < length; i++) {
+        ret = Math.max(ret, prices[i] - minVal)
+        minVal = Math.min(minVal, prices[i])
+    }
+    return ret
+};
 ```
 
 
