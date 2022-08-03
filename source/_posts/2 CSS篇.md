@@ -836,7 +836,7 @@ z-index属性在下列情况下会失效：
   position: relative;
   left: 200px;
 
-  float: right;
+  float: left;
   margin-left: -200px;
 
   width: 200px;

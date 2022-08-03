@@ -309,7 +309,7 @@ console.log(numberepsilon(0.1 + 0.2, 0.3)); // true
 
 ### 8. 如何获取安全的 undefined 值？
 
-因为 undefined 是一个标识符，所以可以被当作变量来使用和赋值，但是这样会影响 undefined 的正常判断。表达式 void ___ 没有返回值，因此返回结果是 undefined。void 并不改变表达式的结果，只是让表达式不返回值。因此可以用 void 0 来获得 undefined。
+因为 undefined 是一个标识符，所以可以被当作变量来使用和赋值，但是这样会影响 undefined 的正常判断。表达式 void ___ 没有返回值，因此返回结果是 undefined。	 并不改变表达式的结果，只是让表达式不返回值。因此可以用 void 0 来获得 undefined。
 
 ### 9. typeof NaN 的结果是什么？
 
@@ -500,6 +500,7 @@ objToNumber({}) === NaN
  1 + Symbol() // Uncaught TypeError: Cannot convert a Symbol value to a number
  '1' + false // '1false'
  false + true // 1
+ + '1'  // 1
 复制代码
 ```
 
@@ -521,6 +522,10 @@ objToNumber({}) === NaN
 3 == true // false, 3 转为number为3，true转为number为1
 '0' == false //true, '0'转为number为0，false转为number为0
 '0' == 0 // '0'转为number为0
+1 == [] // false
+true == []  // false
+{} == {} // false   引用类型比较的是指针
+[] == [] // false
 ```
 
 1. **对于**`<`**和**`>`**比较符**
@@ -1778,6 +1783,8 @@ function getJSON(url) {
 
 ### 17. JavaScript为什么要进行变量提升，它导致了什么问题？
 
+>  代码解析，执行上下文，变量对象，为了 提高性能，增加容错性
+
 变量提升的表现是，无论在函数中何处位置声明的变量，好像都被提升到了函数的首部，可以在变量声明前访问到而不会报错。
 
 造成变量声明提升的**本质原因**是 js 引擎在代码执行前有一个解析的过程，创建了执行上下文，初始化了一些代码执行时需要用到的对象。当访问一个变量时，会到当前执行上下文中的作用域链中去查找，而作用域链的首端指向的是当前执行上下文的变量对象，这个变量对象是执行上下文的一个属性，它包含了函数的形参、所有的函数和变量声明，这个对象的是在代码解析的时候创建的。
@@ -1862,7 +1869,13 @@ console.log(i); // 11
 
 尾调用指的是函数的最后一步调用另一个函数。代码执行是基于执行栈的，所以当在一个函数里调用另一个函数时，会保留当前的执行上下文，然后再新建另外一个执行上下文加入栈中。使用尾调用的话，因为已经是函数的最后一步，所以这时可以不必再保留当前的执行上下文，从而节省了内存，这就是尾调用优化。但是 ES6 的尾调用优化只在严格模式下开启，正常模式是无效的。
 
-### 19. **ES6**模块与**CommonJS**模块有什么异同？
+### 19. **ES6**模块与**CommonJS**模块AMD有什么异同？
+
+> CommonJS: 同步，缓存，浅拷贝（能改）
+>
+> AMD： 异步，回调
+>
+> ES6: 静态化，编译阶段， 引用，（能改）
 
 ES6 Module和CommonJS模块的区别：
 
@@ -1872,6 +1885,10 @@ ES6 Module和CommonJS模块的区别：
 ES6 Module和CommonJS模块的共同点：
 
 - CommonJS和ES6 Module都可以对引⼊的对象进⾏赋值，即对对象内部属性的值进⾏改变。
+
+Asynchronous ModuleDefinition（AMD），异步模块定义，采用异步方式加载模块。所有依赖模块的语句，都定义在一个回调函数中，等到模块加载完成之后，这个回调函数才会运行
+
+代表库为require.js
 
 ### 20. 常见的DOM操作有哪些
 
@@ -2115,7 +2132,7 @@ obj[Symbol.iterator] = function*(){
         yield [k,obj[k]]
     }
 };
-
+	
 for(var [k,v] of obj){
     console.log(k,v);
 }
@@ -2123,6 +2140,12 @@ for(var [k,v] of obj){
 ```
 
 ### 27. ajax、axios、fetch的区别
+
+> ajax: 配置调用方式比较混乱
+>
+> fetch：语法简介，promise，api多； 报错问题，监测请求进度
+>
+> axios：浏览器端XMLHttpRequests请求，Promise API，监听请求和返回，自动转换json
 
 **（1）AJAX** Ajax 即“AsynchronousJavascriptAndXML”（异步 JavaScript 和 XML），是指一种创建交互式网页应用的网页开发技术。它是一种在无需重新加载整个网页的情况下，能够更新部分网页的技术。通过在后台与服务器进行少量数据交换，Ajax 可以使网页实现异步更新。这意味着可以在不重新加载整个网页的情况下，对网页的某部分进行更新。传统的网页（不使用 Ajax）如果需要更新内容，必须重载整个网页页面。其缺点如下：
 

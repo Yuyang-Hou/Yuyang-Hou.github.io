@@ -706,6 +706,28 @@ methodsToPatch.forEach(function(method) {
 
 ### 21. Vue 单页应用与多页应用的区别
 
+> SPA的特点:
+> SPA应用只有一个HTML文件, 所有的内容其实都在这个页面中呈现的
+> SPA应用只会加载一次HTML文件, 不会因为用户的操作而进行页面的重新加载
+> 当用户与应用程序交互时, 是通过动态更新页面内容的方式来呈现不同的内容
+>
+> 3. SPA优点:
+>    有良好的交互体验
+>    不会重新加载整个网页, 只是局部更新
+>    前后端分离开发
+>    前端负责页面呈现和交互, 后端负责数据
+>    减轻服务器压力
+>    只用处理数据不用处理界面
+>    共用一套后端程序代码
+> 4. SPA缺点：
+>    SEO难度较高
+>    只有一个界面, 无法针对不同的内容编写不同的SEO信息
+>    初次加载耗时多
+>    为实现单页Web应用功能及显示效果，需要在加载页面的时候将所有JavaScript、CSS统一加载，
+>    在Vue中可以使用按需加载解决初次加载耗时多
+>
+> seo优化方案https://blog.csdn.net/ME_GIRL/article/details/119317172
+
 **概念：**
 
 - SPA单页面应用（SinglePage Web Application），指只有一个主页面的应用，一开始只需要加载一次js、css等相关资源。所有内容都包含在主页面，对每一个功能模块组件化。单页应用跳转，就是切换相关组件，仅仅刷新局部资源。
@@ -985,7 +1007,9 @@ React与Vue最大的不同是模板的编写。
 - Vue鼓励写近似常规HTML的模板。写起来很接近标准 HTML元素，只是多了一些属性。
 - React推荐你所有的模板通用JavaScript的语法扩展——JSX书写。
 
-具体来讲：React中render函数是支持闭包特性的，所以import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以 import 一个组件完了之后，还需要在 components 中再声明下。 **4）监听数据变化的实现原理不同**
+具体来讲：React中render函数是支持闭包特性的，所以import的组件在render中可以直接调用。但是在Vue中，由于模板中使用的数据都必须挂在 this 上进行一次中转，所以 import 一个组件完了之后，还需要在 components 中再声明下。
+
+ **4）监听数据变化的实现原理不同**
 
 - Vue 通过 getter/setter 以及一些函数的劫持，能精确知道数据变化，不需要特别的优化就能达到很好的性能
 - React 默认是通过比较引用的方式进行的，如果不优化（PureComponent/shouldComponentUpdate）可能导致大量不必要的vDOM的重新渲染。这是因为 Vue 使用的是可变数据，而React更强调数据的不可变。
@@ -2496,6 +2520,18 @@ Virtual DOM的更新DOM的准备工作耗费更多的时间，也就是JS层面�
 - 正如它能保证性能下限，在真实DOM操作的时候进行针对性的优化时，还是更快的。
 
 ### 5. DIFF算法的原理
+
+1. 当数据发生改变时，订阅者watcher就会调用patch给真实的DOM打补丁
+2. 通过isSameVnode进行判断，相同则调用patchVnode方法
+3. patchVnode做了以下操作：
+   - 找到对应的真实dom，称为el
+   - 如果都有都有文本节点且不相等，将el文本节点设置为Vnode的文本节点
+   - 如果oldVnode有子节点而VNode没有，则删除el子节点
+   - 如果oldVnode没有子节点而VNode有，则将VNode的子节点真实化后添加到el
+   - 如果两者都有子节点，则执行updateChildren函数比较子节点
+4. updateChildren主要做了以下操作：
+   - 设置新旧VNode的头尾指针
+   - 新旧头尾指针进行比较，循环向中间靠拢，根据情况调用patchVnode进行patch重复流程、调用createElem创建一个新节点，从哈希表寻找 key一致的VNode 节点再分情况操作
 
 在新老虚拟DOM对比时：
 

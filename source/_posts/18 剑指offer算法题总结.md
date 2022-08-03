@@ -3,9 +3,9 @@ title: 剑指offer算法题总结
 date: 2022-07-16
 ---
 
-## 总结剑指offer的不同类型的题
+# 总结剑指offer的不同类型的题
 
-### 一、二叉树部分
+## 一、二叉树部分
 
 #### 剑指 Offer 07. 重建二叉树
 
@@ -22,11 +22,10 @@ var buildTree = function(preorder, inorder) {
     root.left = buildTree(preorder.slice(1, i + 1), inorder.slice(0, i))
     root.right = buildTree(preorder.slice(i + 1, ), inorder.slice(i+1, ))
     return root
-    
 };
 ```
 
-#### 剑指 Offer 26. 树的子结构
+#### ！ 剑指 Offer 26. 树的子结构
 
 输入两棵二叉树A和B，判断B是不是A的子结构。(约定空树不是任意一个树的子结构)
 
@@ -43,6 +42,7 @@ const recur = function(A, B) {
     return recur(A.left, B.left) && recur(A.right, B.right)
 }
 var isSubStructure = function(A, B) {
+  	// 这里的Boolean别忘了，简单的说，B肯定要有，A自然也要有
     return Boolean(A && B) && (recur(A, B) || isSubStructure(A.left, B) || isSubStructure(A.right, B))
 };
 
@@ -51,6 +51,8 @@ var isSubStructure = function(A, B) {
 
 
 #### 剑指 Offer 27. 二叉树的镜像
+
+`思路，简单一点想，就是左子树和右子树互换，但是换之前，要把左右子树的先做好镜像，所以先对左右子树执行镜像操作，退出条件就是null`
 
 ```js
 var mirrorTree = function(root) {
@@ -73,6 +75,7 @@ var mirrorTree = function(root) {
 
 ```js
 const check = function(p, q) {
+    // 边界条件，不谢的花，后面会报错
     if (!p && !q) return true
     if (!p || !q) return false
     return p.val === q.val && check(p.left, q.right) && check(p.right, q.left)
@@ -136,7 +139,7 @@ var levelOrder = function(root) {
 
 ```js
 var levelOrder = function(root) {
-    let res = [], queue = [], cir = 1
+    let res = [], queue = []
     if (!root) return res
     queue.push(root)
     while (queue.length) {
@@ -144,6 +147,7 @@ var levelOrder = function(root) {
         for (let i = queue.length; i > 0; i--) {
             node = queue.shift()
             if (res.length % 2) {
+              	// 为奇数，此层为偶数层，则反方向
                 tmp.unshift(node.val)
             } else {
                 tmp.push(node.val)
@@ -153,7 +157,6 @@ var levelOrder = function(root) {
             if (node.right) queue.push(node.right)
         }
         res.push(tmp)
-        // cir++
     }
     return res
 };
@@ -165,6 +168,8 @@ var levelOrder = function(root) {
 #### 剑指 Offer 33.二叉搜索树的后序遍历序列…
 
 输入一个整数数组，判断该数组是不是某二叉搜索树的后序遍历结果。如果是则返回 true，否则返回 false。假设输入的数组的任意两个数字都互不相同。
+
+`左子树上的节点都比root小，右子树的节点都比root大，因此只要递归判断该数组是否满足前提即可，判出：数组只有一个元素或者没有元素`
 
 ```js
 var verifyPostorder = function(postorder) {
@@ -214,13 +219,6 @@ https://leetcode.cn/problems/er-cha-sou-suo-shu-yu-shuang-xiang-lian-biao-lcof/
 
 ```js
 var treeToDoublyList = function(root) {
-    if (!root) return 
-    let pre = null, head = null
-    dfs(root)
-    head.left = pre
-    pre.right = head
-    return head
-    
     function dfs(cur) {
         if (!cur) return 
         dfs(cur.left)
@@ -234,6 +232,12 @@ var treeToDoublyList = function(root) {
         pre = cur
         dfs(cur.right)
     }
+    if (!root) return 
+    let pre = null, head = null
+    dfs(root)
+    head.left = pre
+    pre.right = head
+    return head
 };
 
 ```
@@ -282,6 +286,15 @@ var maxDepth = function(root) {
     }
     return res
 };
+var maxDepth = function(root) {
+    const dfs = (node) => {
+        if (node === null) {
+            return 0
+        }
+        return Math.max(dfs(node.left), dfs(node.right)) + 1
+    }
+    return dfs(root)
+};
 ```
 
 
@@ -293,8 +306,8 @@ var maxDepth = function(root) {
 ```js
 var isBalanced = function(root) {
     const depth = function(root) {
-    if (!root) return 0
-    return Math.max(depth(root.left), depth(root.right)) + 1
+      if (!root) return 0
+      return Math.max(depth(root.left), depth(root.right)) + 1
 		}
     if (!root) return true
     return Math.abs(depth(root.left) - depth(root.right)) <= 1 && isBalanced(root.left) && isBalanced(root.right)
@@ -304,6 +317,8 @@ var isBalanced = function(root) {
 
 
 #### 剑指 Offer 68 -1. 二叉搜索树的最近公共祖先
+
+`如果都大于node.val说明都在node右子树，如果都小于，则说明node左子树，否则返回该节点`
 
 ```js
 var lowestCommonAncestor = function(root, p, q) {
@@ -381,47 +396,6 @@ var numWays = function(n) {
     }
     return cur
 };
-```
-
-
-
-#### 剑指 Offer 13. 机器人的运动范围      2263 （bfs）
-
-地上有一个m行n列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
-
-```js
-const digitsum = function(n) {
-  let ans = 0
-  while(n) {
-    ans += n % 10
-    n = Math.floor(n / 10)
-  }
-  return ans
-}
- // 这里是bfs的方法，设置一个标志位记录是否
-// 
-var movingCount = function(m, n, k) {
-  const q = new Array()
-  const arr = new Array(m).fill().map(_ => new Array(n).fill(0))
-  q.push([0, 0])
-  let counter = 0
-  while (q.length) {
-    const [x, y] = q.shift()
-		if (x >= m || y >= n)  continue
-    // 遍历过
-    if (arr[x][y]) continue
-    // 设置遍历过的标识
-    arr[x][y] = 1
-    if (digitsum(x) + digitsum(y) <= k) {
-      // 符合条件的计数
-      counter++
-      // 将右、下两格加入队列
-      q.push([x + 1, y], [x, y + 1])
-    }   
-  }
-  return counter
-};
-
 ```
 
 
@@ -505,6 +479,7 @@ var maxSubArray = function(nums) {
     })
     return maxAns
 };
+
 // 7.29三刷
 var maxSubArray = function(nums) {
     let prev = 0, cur = nums[0], length = nums.length, max = nums[0];
@@ -539,6 +514,7 @@ var translateNum = function(num) {
 
     for(let i = 1;i<str.length;i++){
             let tmp = parseInt(str.slice(i - 1, i+1), 10) || 0;
+      			// 05不能翻译成5，所以要大于等于10
             if(tmp >=10 && tmp <=25){
                 dp[i+1] = dp[i-1] + dp[i];
             } else {
@@ -580,10 +556,7 @@ var maxValue = function(grid) {
     // 状态转移方程: dp[i][j] = max(dp[i-1][j],dp[i][j-1]) + grid[i][j];
     // 初始化: dp[0][0] = grid[0][0];
     // dp右下角元素
-    const dp = new Array(grid.length);
-    for(let i = 0;i < dp.length;i ++) {
-        dp[i] = new Array(grid[0].length);
-    }
+  	const dp = new Array(grid.length).fill().map(_ => new Array(grid[0].length).fill(0))
     dp[0][0] = grid[0][0];
     for(let i = 0;i < grid.length;i ++) {
         for(let j = 0;j < grid[0].length;j ++) {
@@ -705,6 +678,25 @@ var maxProfit = function(prices) {
     }
     return ret
 };
+
+
+附 309 最佳买卖股票时机含冷冻期    中等
+var maxProfit = function(prices) {
+    if(prices.length === 0){
+        return 0;
+    }
+    let length = prices.length, 
+        f0 = -prices[0], // 持有股票
+        f1 = 0,  // 不持有，并处于冷冻
+        f2 = 0;  // 不持有，不处于冷冻
+    for (let i = 1; i < length; i++) {
+        let newf0 = Math.max(f0, f2 - prices[i]),
+            newf1 = f0 + prices[i],
+            newf2 = Math.max(f1, f2);
+        [f0, f1, f2] = [newf0, newf1, newf2]
+    }
+    return Math.max(f1, f2)
+};
 ```
 
 
@@ -812,12 +804,32 @@ var copyRandomList = function(head, cachedNode = new Map()) {
     }
     if (!cachedNode.has(head)) {
         cachedNode.set(head, {val: head.val}) 
+      	// 传参的时候别忘了传cachNode
         Object.assign(cachedNode.get(head), {next: copyRandomList(head.next, cachedNode), random: copyRandomList(head.random, cachedNode)})
     }
     return cachedNode.get(head);
 }
-// 方法2
-
+// 方法2  迭代 + 阶段拆分
+var copyRandomList = function(head) {
+    if (head === null) {
+        return null;
+    }
+    for (let node = head; node !== null; node = node.next.next) {
+        const nodeNew = new Node(node.val, node.next, null);
+        node.next = nodeNew;
+    }
+    for (let node = head; node !== null; node = node.next.next) {
+        const nodeNew = node.next;
+        nodeNew.random = (node.random !== null) ? node.random.next : null;
+    }
+    const headNew = head.next;
+    for (let node = head; node !== null; node = node.next) {
+        const nodeNew = node.next;
+        node.next = node.next.next;
+        nodeNew.next = (nodeNew.next !== null) ? nodeNew.next.next : null;
+    }
+    return headNew;
+};
 ```
 
 #### 剑指 Offer 36. 二叉搜索树与双向链表
@@ -864,6 +876,24 @@ var findRepeatNumber = function(nums) {
         mySet.add(x)
     }
 };
+
+const swap = function(nums, a, b) {
+        [nums[a], nums[b]] = [nums[b], nums[a]]
+    }
+var findRepeatNumber = function(nums) {
+    for (let i = 0; i < nums.length; ) {
+      	// 需要注意直到下标相等时才右移
+        if(nums[i] === i) {
+            i++
+            continue;
+        }
+        if (nums[nums[i]] === nums[i]) {
+            return nums[i]
+        }
+        swap(nums, nums[i], i)
+    }
+    return -1
+};
 ```
 
 
@@ -876,6 +906,7 @@ var findNumberIn2DArray = function(matrix, target) {
     }
     const row = matrix.length, col = matrix[0].length;
     let i = 0, j = col - 1;
+    // 注意这里不要用双层循环，只能用while单层的
     while(i < row && j >= 0) {
         // console.log(i, j)
         const num = matrix[i][j]
@@ -921,7 +952,52 @@ var minArray = function(numbers) {
 
 ```
 
+#### 剑指 Offer 12. 矩阵中的路径
+
+```js
+var exist = function(board, word) {
+    if (board.length === 0 || board[0].length === 0) return false;
+    const m = board.length, n = board[0].length
+    
+    const inArea = function (x, y) {
+        return x >=0 && x < m && y >=0 && y < n
+    }
+    const dirs = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+    
+    const dfs = (i, j, k) => {
+        if (!inArea(i, j) || board[i][j] !== word[k]) {
+            return false
+        }
+        if (k === word.length - 1) {
+            return true
+        }
+        // 回溯，这个节点遍历之后就让它置空，递归结束之后再重新设置回来
+        board[i][j] = ''
+        let res = false
+        dirs.forEach(dir => {
+            if (dfs(i + dir[0], j + dir[1], k + 1)) {
+                res = true
+            }
+        })
+      	// **
+        board[i][j] = word[k]
+        return res
+    }
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if (dfs(i, j, 0)) {
+                return true
+            }
+        }
+    }
+    return false
+};
+```
+
+
+
 #### 剑指 Offer 17. 打印从1到最大的n..1389
+
 ```js
 var printNumbers = function(n) {
     let max = Math.pow(10,n) 
@@ -938,6 +1014,7 @@ var printNumbers = function(n) {
 
 #### 剑指 Offer 21.调整数组顺序使奇数位于偶数前… 2234 
 ```js
+// 方法1，额外数组
 var exchange = function(nums) {
     const res = []
     for(const num of nums) {
@@ -949,7 +1026,21 @@ var exchange = function(nums) {
     }
     return res
 };
-
+// 方法2， 快慢指针
+const swap = function(nums, a, b) {
+   	if(a !== b) [nums[a], nums[b]] = [nums[b], nums[a]]
+}
+var exchange = function(nums) {
+    let slow = 0, fast = 0
+    while(fast < nums.length) {
+        if (nums[fast] & 1) {
+            if(slow < fast) swap(nums, slow, fast)
+            slow++
+        }
+        fast++;
+    }
+    return nums
+};
 ```
 
 
@@ -971,6 +1062,7 @@ var spiralOrder = function(matrix) {
         for (let row = top + 1; row <= bottom; row++) {
             order.push(matrix[row][right]);
         }
+        // 这里一定要加判定
         if (left < right && top < bottom) {
             for (let column = right - 1; column > left; column--) {
                 order.push(matrix[bottom][column]);
@@ -999,8 +1091,21 @@ var validateStackSequences = function(pushed, popped) {
             i++
         }
     }
-    // 这里不能用！stack
     return stack.length > 0 ? false : true
+};
+
+// 7.30二刷
+var validateStackSequences = function(pushed, popped) {
+    let stack = [], length = pushed.length, pos = 0
+    for (let i = 0; i < length; i++) {
+        stack.push(pushed[i])
+        while(stack.length && stack[stack.length - 1] === popped[pos]) {
+            console.log(stack)
+            stack.pop()
+            pos++
+        }
+    }
+    return pos === length
 };
 ```
 
@@ -1022,10 +1127,11 @@ var majorityElement = function(nums) {
         }
     }
 };
-// var majorityElement = function(nums) {
-//     nums.sort((a,b)=>a-b);
-//     return nums[Math.floor(nums.length/2)];
-// };
+// 方法二，排序取中点
+var majorityElement = function(nums) {
+    nums.sort((a,b)=>a-b);
+    return nums[Math.floor(nums.length/2)];
+};
 ```
 
 
@@ -1033,7 +1139,7 @@ var majorityElement = function(nums) {
 #### 剑指 Offer 42.连续子数组的最大和 1981
 #### 剑指 Offer 47. 礼物的最大价值1451
 #### 剑指 Offer 51.数组中的逆序对1236  困难
-#### 剑指 Offer 53-1. 在排序数组中查找数字｜.2244
+#### ！剑指 Offer 53-1. 在排序数组中查找数字｜.2244
 
 返回出现的次数
 
@@ -1045,6 +1151,7 @@ const binarySearch = (nums, target, lower) => {
         const mid = Math.floor((left + right) / 2);
         if (nums[mid] > target || (lower && nums[mid] >= target)) {
             right = mid - 1;
+          	// ans保留最后>或>=target的元素，
             ans = mid;
         } else {
             left = mid + 1;
@@ -1057,6 +1164,7 @@ var search = function(nums, target) {
     let ans = 0;
     const leftIdx = binarySearch(nums, target, true);
     const rightIdx = binarySearch(nums, target, false) - 1;
+  	// 万一没有这个元素的情况筛选
     if (leftIdx <= rightIdx && rightIdx < nums.length && nums[leftIdx] === target && nums[rightIdx] === target) {
         ans = rightIdx - leftIdx + 1;
     } 
@@ -1066,23 +1174,38 @@ var search = function(nums, target) {
 
 
 
-#### 剑指 Offer 53 - 11.0~n-1中缺失… 2165
+#### ！ 剑指 Offer 53 - 11.0~n-1中缺失… 2165
 
 ```js
+// 下标法
 var missingNumber = function(nums) {
-    const n = nums.length + 1;
-    for (let i = 0; i < n - 1; i++) {
+    const n = nums.length;
+    for (let i = 0; i < n; i++) {
         if (nums[i] !== i) {
             return i;
         }
     }
-    return n - 1;
+    return n;
+};
+012356
+// 二分法
+var missingNumber = function(nums) {
+    let i = 0, j = nums.length - 1
+    // 闭区间
+    while(i <= j) {
+        let mid = (i + j) >> 1
+        // i j分别指向右子数组首位元素和左子数组的末尾元素
+        if (nums[mid] === mid) i = mid + 1
+        else j = mid - 1
+    }
+  	// 返回的是下标
+    return i
 };
 ```
 
 
 
-#### 剑指 Offer 56 -l.数组中数字出现的次数…1358 
+#### 剑指 Offer 56 -l.数组中数字出现的次数…1358 （位运算，异或）
 
 在一个数组 nums 中除两个数字只出现一次之外，其他数字都出现了两次。请找出那个只出现一次的数字。
 
@@ -1093,10 +1216,13 @@ var singleNumbers = function (nums) {
     nums.forEach(num => {
         m ^= num;
     });
+    // 求其中标志位
     let d = m & -m;
+    // 分组计算，计算其中一半的
     nums.forEach(num => {
         num & d ? n ^= num : '';
     });
+    // 
     let n1 = n ^ m;
     return [n, n1]
 };
@@ -1126,6 +1252,15 @@ var singleNumber = function (nums) {
   }
 };
 
+// 状态机
+var singleNumber = function (nums) {
+  let ones = twos = 0;
+  for (let num of nums) {
+      ones = ones ^ num & ~twos
+      twos = twos ^ num & ~ones
+  }
+  return ones
+};
 ```
 
 
@@ -1146,8 +1281,12 @@ var twoSum = function(nums, target) {
 };
 ```
 
-
 #### 剑指 Offer 61. 扑克牌中的顺子1423
+
+joker可以为任意牌
+
+`没有重复，并且最小值和最大值差小于5， 所以要得到最小值和最大值，可以用set判断重复，取最大最小，或者遍历之后，最后一个值减去第一个下标为joker数量，即第一个不为joker的值`
+
 ```js
 var isStraight = function(nums) {
     const set = new Set()
@@ -1161,6 +1300,16 @@ var isStraight = function(nums) {
     }
     return max - min < 5
 };
+
+var isStraight = function(nums) {
+    let joker = 0
+    nums = nums.sort((a, b) => a - b)
+    for (let i = 0; i < 5; i++) {
+        if (nums[i] === 0) joker++
+        else if (nums[i] === nums[i + 1]) return false
+    }
+    return nums[4] - nums[joker] < 5
+};
 ```
 
 
@@ -1168,6 +1317,48 @@ var isStraight = function(nums) {
 #### 剑指 Offer 63. 股票的最大利润1380
 
 
+
+### 五、bfs
+
+#### 剑指 Offer 13. 机器人的运动范围      2263 （bfs）
+
+地上有一个m行n列的方格，从坐标 [0,0] 到坐标 [m-1,n-1] 。一个机器人从坐标 [0, 0] 的格子开始移动，它每次可以向左、右、上、下移动一格（不能移动到方格外），也不能进入行坐标和列坐标的数位之和大于k的格子。例如，当k为18时，机器人能够进入方格 [35, 37] ，因为3+5+3+7=18。但它不能进入方格 [35, 38]，因为3+5+3+8=19。请问该机器人能够到达多少个格子？
+
+```js
+const digitsum = function(n) {
+  let ans = 0
+  while(n) {
+    ans += n % 10
+    n = Math.floor(n / 10)
+  }
+  return ans
+}
+ // 这里是bfs的方法，设置一个标志位记录是否
+// 
+var movingCount = function(m, n, k) {
+  const q = new Array()
+  const arr = new Array(m).fill().map(_ => new Array(n).fill(0))
+  q.push([0, 0])
+  let counter = 0
+  while (q.length) {
+    const [x, y] = q.shift()
+		if (x >= m || y >= n)  continue
+    // 遍历过
+    if (arr[x][y]) continue
+    // 设置遍历过的标识
+    arr[x][y] = 1
+    if (digitsum(x) + digitsum(y) <= k) {
+      // 符合条件的计数
+      counter++
+      // 将右、下两格加入队列
+      q.push([x + 1, y], [x, y + 1])
+    }   
+  }
+  return counter
+};
+
+
+```
 
 
 

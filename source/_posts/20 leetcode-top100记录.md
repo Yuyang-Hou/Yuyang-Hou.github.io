@@ -134,7 +134,7 @@ var longestPalindrome = function(s) {
             l--
             r++
         }
-        return [l + 1, r - 1]
+        return [l + 1, r - 1]  // 这里忘了减了
     }
     let start = 0; end = 0
     for (let i = 0; i < s.length; i++) {
@@ -557,7 +557,7 @@ var search = function (nums, target) {
 
 ### 34 在排序数组中查找元素的第一个和最后一个位置   中等
 
-```
+```js
 const binarySearch = (nums, target, lower) => {
     let left = 0, right = nums.length - 1, ans = nums.length;
     while (left <= right) {
@@ -587,7 +587,7 @@ var searchRange = function(nums, target) {
 
 ### 39组合总和   中等
 
-```
+```js
 var combinationSum = function(candidates, target) {
     const ans = [];
     const dfs = (target, combine, idx) => {
@@ -615,7 +615,7 @@ var combinationSum = function(candidates, target) {
 
 ### 42 接雨水   困难
 
-```
+``` js
 var trap = function(height) {
     let ans = 0;
     let left = 0, right = height.length - 1;
@@ -623,6 +623,7 @@ var trap = function(height) {
     while (left < right) {
         leftMax = Math.max(leftMax, height[left]);
         rightMax = Math.max(rightMax, height[right]);
+      	// 这里额外注意
         if (height[left] < height[right]) {
             ans += leftMax - height[left];
             ++left;
@@ -703,7 +704,7 @@ var rotate = function(matrix) {
 
 ### 49字母异位词分组   中等
 
-```
+```js
 var groupAnagrams = function (strs) {
     const map = new Map();
 
@@ -1007,6 +1008,8 @@ var inorderTraversal = function(root) {
 
 ### 96 不同的二叉搜索树   中等
 
+`笛卡尔积`
+
 <img src="/Users/onlycat/Library/Application Support/typora-user-images/image-20220723100317112.png" alt="image-20220723100317112" style="zoom:50%; margin-left:0" />
 
 ```js
@@ -1238,7 +1241,7 @@ function wordBreak(s: string, wordDict: string[]): boolean {
     
     dp[0] = true
     for (let i = 1; i <= n; i++) {
-        for (let j = 0; j <= i; j++) {
+        for (let j = 0; j < i; j++) {
             if (dp[j] && wordDictSet.has(s.substr(j, i - j))) {
                 dp[i] = true
                 break
@@ -1298,6 +1301,8 @@ var detectCycle = function(head) {
 
 ### 148 排序链表     中等
 
+`递归，中分`
+
 ```js
 var sortList = function(head) {
     if(head == null || head.next == null) return head
@@ -1341,12 +1346,10 @@ var sortList = function(head) {
 const maxProduct = function (nums) {
     let ans = nums[0], 
         maxValue = nums[0], 
-        minValue = nums[0], 
-        maxProduct = 0, 
-        minProduct = 0
+        minValue = nums[0]
     for( let i = 1; i < nums.length; i++) {
-        maxProduct = nums[i] * maxValue
-        minProduct = nums[i] * minValue
+        let maxProduct = nums[i] * maxValue
+        let minProduct = nums[i] * minValue
         // 更新最大值，最小值
         maxValue = Math.max(maxProduct, minProduct, nums[i])
         minValue = Math.min(maxProduct, minProduct, nums[i])
@@ -1671,7 +1674,7 @@ var lowestCommonAncestor = function(root, p, q) {
 
 ### 238除自身以外数组的乘积   中等  
 
-```
+```js
 var productExceptSelf = function(nums: number[]): number[] {
     const length = nums.length;
     const answer = new Array<number>(length);
@@ -2246,6 +2249,35 @@ var subarraySum = function(nums, k) {
 ### 581 最短无序连续子数组    中等
 
 ```js
+var findUnsortedSubarray = function(nums) {
+    if (isSorted(nums)) {
+        return 0;
+    }
+    const numsSorted = [...nums].sort((a, b) => a - b);
+    let left = 0;
+    while (nums[left] === numsSorted[left]) {
+        left++;
+    }
+    let right = nums.length - 1;
+    while (nums[right] == numsSorted[right]) {
+        right--;
+    }
+    return right - left + 1;
+};
+
+const isSorted = (nums) => {
+    for (let i = 1; i < nums.length; i++) {
+        if (nums[i] < nums[i - 1]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+作者：LeetCode-Solution
+链接：https://leetcode.cn/problems/shortest-unsorted-continuous-subarray/solution/zui-duan-wu-xu-lian-xu-zi-shu-zu-by-leet-yhlf/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
 // 不是很理解这个思路
 var findUnsortedSubarray = function(nums) {
     const n = nums.length;
