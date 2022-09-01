@@ -3,7 +3,7 @@ title: 剑指offer算法题总结
 date: 2022-07-16
 ---
 
-# 总结剑指offer的不同类型的题
+>总结剑指offer的不同类型的题
 
 ## 一、二叉树部分
 
@@ -336,7 +336,7 @@ var lowestCommonAncestor = function(root, p, q) {
 
 
 
-#### 剑指 Offer 68 - II. 二叉树的最近公共祖先
+#### ! 剑指 Offer 68 - II. 二叉树的最近公共祖先
 
 https://leetcode.cn/problems/er-cha-shu-de-zui-jin-gong-gong-zu-xian-lcof/
 
@@ -792,7 +792,7 @@ var mergeTwoLists = function(l1, l2) {
 
 ```
 
-#### 剑指 Offer 35. 复杂链表的复制
+#### ! 剑指 Offer 35. 复杂链表的复制
 
 请实现 copyRandomList 函数，复制一个复杂链表。在复杂链表中，每个节点除了有一个 next 指针指向下一个节点，还有一个 random 指针指向链表中的任意节点或者 null。
 
@@ -929,12 +929,12 @@ var findNumberIn2DArray = function(matrix, target) {
 
 
 
-#### 剑指 Offer 11. 旋转数组的最小数字 2250 
+#### ! 剑指 Offer 11. 旋转数组的最小数字 2250 
 ```js
 var minArray = function(numbers) {
     let low = 0,
         high = numbers.length - 1
-    while (low < high) {
+    while (low <= high) {
         const mid = low + Math.floor((high - low) / 2)
         if (numbers[mid] > numbers[high]) {
           	// 此时mid肯定不是最小值，所以可以加一
@@ -1091,7 +1091,7 @@ var validateStackSequences = function(pushed, popped) {
             i++
         }
     }
-    return stack.length > 0 ? false : true
+    return !stack.length
 };
 
 // 7.30二刷
@@ -1139,7 +1139,7 @@ var majorityElement = function(nums) {
 #### 剑指 Offer 42.连续子数组的最大和 1981
 #### 剑指 Offer 47. 礼物的最大价值1451
 #### 剑指 Offer 51.数组中的逆序对1236  困难
-#### ！剑指 Offer 53-1. 在排序数组中查找数字｜.2244
+#### ！剑指 Offer 53-1. 在排序数组中查找数字出现的次数｜.2244
 
 返回出现的次数
 
@@ -1337,16 +1337,16 @@ const digitsum = function(n) {
 // 
 var movingCount = function(m, n, k) {
   const q = new Array()
-  const arr = new Array(m).fill().map(_ => new Array(n).fill(0))
+  const visited = new Array(m).fill().map(_ => new Array(n).fill(0))
   q.push([0, 0])
   let counter = 0
   while (q.length) {
     const [x, y] = q.shift()
 		if (x >= m || y >= n)  continue
     // 遍历过
-    if (arr[x][y]) continue
+    if (visited[x][y]) continue
     // 设置遍历过的标识
-    arr[x][y] = 1
+    visited[x][y] = 1
     if (digitsum(x) + digitsum(y) <= k) {
       // 符合条件的计数
       counter++

@@ -1,29 +1,39 @@
 ---
-title: leetcode top100记录
+title: leetcode top100三刷记录
 ---
 
-争取三天拿下，至少面试能想出来思路
+> 首刷：争取三天拿下，至少面试能想出来思路
+>
+> 记一些易错点
+>
+> - forEach中, return会失效，要在循环中return的话记得用普通循环
+> - forEach中使用 return 语句的作用只能跳出当前循环（实现了continue的效果），并不能跳出整个循环，没达到期待的效果，满足条件后还继续执行了循环。因为 forEach 本身无法跳出循环，必须遍历所有的数据才能结束，它传入的是一个回调函数，因此形成了一个作用域，它内部所定义的变量不会像for循环一样污染全局变量。
 
 ### 1 两数之和   简单
 
-```
-var twoSum = function(nums, target) {
-    var obj ={}
-    for(var i =0;i<nums.length-1;i++){
-        obj.a=i
-        for(var j = i+1;j<nums.length;j++){
-            obj.b=j
-            if(nums[i]+nums[j]==target){
-                return Object.values(obj)
-            }
+```js
+// 暴力
+let m = nums.length
+    for (let i = 0; i < m; i++) {
+        for (let j = i + 1; j < m; j++) {
+            if(nums[i] + nums[j] === target) return [i, j]
         }
-    } 
+    }
+// hash
+var twoSum = function(nums, target) {
+    let map = new Map(), length = nums.length
+    for (let i = 0; i < length; i++) {
+        if(map.has(target - nums[i])) {
+            return [map.get(target - nums[i]), i]
+        }
+        map.set(nums[i], i)
+    }
 };
 ```
 
-### 2 两数相加   中等
+### ！ 2 两数相加   中等
 
-```
+```js
 var addTwoNumbers = function(l1, l2) {
     let result, temp;
     let add = 0;
@@ -47,13 +57,37 @@ var addTwoNumbers = function(l1, l2) {
     if (add) temp.next = new ListNode(add);
     return result;
 };
+// 8.5二刷，看了题解，尝试使用原来的链表，想不出来
+var addTwoNumbers = function(l1, l2) {
+    let head, cur;
+    let add = 0;
+    while(l1 || l2) {
+        // 要用括号括好，否则优先级会错
+        let sum = (l1 && l1.val || 0) + (l2 && l2.val || 0) + add
+        add = sum > 9 ? 1 : 0
+        sum = sum % 10
+        console.log(sum)
+        if (!head) {
+            result = new ListNode(sum)
+            cur = result
+        } else {
+            cur.next = new ListNode(sum)
+            cur = cur.next
+        }
+        l1 = l1 && l1.next || null
+        l2 = l2 && l2.next || null
+    }
+    // 处理最后的进位
+    if (add) cur.next = new ListNode(add)
+    return head
+};
 ```
 
 
 
 ### 3 无重复字符的最长子串   中等
 
-```
+```js
 var lengthOfLongestSubstring = function(s) {
     // 哈希集合，记录每个字符是否出现过
     const occ = new Set();
@@ -74,6 +108,21 @@ var lengthOfLongestSubstring = function(s) {
         ans = Math.max(ans, rk - i + 1);
     }
     return ans;
+    
+// 8.5二刷， i做右指针，左指针用一个变量保存
+var lengthOfLongestSubstring = function(s) {
+    let map = new Map(), length = s.length,
+        maxLength = 0,
+        left = 0
+    for (let i = 0; i < length; i++) {
+        if (map.has(s[i])) {
+            left = Math.max(left, map.get(s[i]) + 1)
+        }
+        map.set(s[i], i)
+        maxLength = Math.max(i - left + 1, maxLength)
+    }
+    return maxLength
+};
 ```
 
 
@@ -127,7 +176,7 @@ var findMedianSortedArrays = function(nums1, nums2) {
 
 ### 5 最长回文子串   中等
 
-```
+```js
 var longestPalindrome = function(s) {
     const expendAroudCenter = function(s, l, r) {
         while(l >= 0 && r < s.length && s[l] === s[r]) {
@@ -149,7 +198,29 @@ var longestPalindrome = function(s) {
     }
     return s.slice(start, end + 1)
 };
-
+// 
+var longestPalindrome = function(s) {
+    const expendStr = function(s, i, j) {
+        while(i >= 0 && j < s.length && s[i] === s[j]) {
+            i--
+            j++
+        }
+      	// 这里不要用i++
+        return [++i, --j]
+    }
+    let l = r = 0 
+    for (let i = 0; i < s.length; i++) {
+        let [l1, r1] = expendStr(s, i, i)
+        let [l2, r2] = expendStr(s, i, i+1)
+        if (r1 - l1 > r - l) {
+            [l, r] = [l1, r1]
+        }
+        if (r2 - l2 > r - l) {
+            [l, r] = [l2, r2]
+        }
+    }
+    return s.slice(l, r + 1)
+};
 ```
 
 
@@ -186,11 +257,13 @@ var isMatch = function (s, p) {
 
 ### 11盛最多水的容器   中等
 
-```
+`i，j较小的那个先向内移动 如果高的指针先移动，那肯定不如当前的面积大，因为是取小值，只能希望`
+
+```js
 var maxArea = function(height) {
     let max = 0;
     for (let i = 0, j = height.length - 1; i < j;) {//双指针i，j循环height数组
-      	//i，j较小的那个先向内移动 如果高的指针先移动，那肯定不如当前的面积大
+      	//i，j较小的那个先向内移动 如果高的指针先移动，那肯定不如当前的面积大，因为是取小值，只能希望
         const minHeight = height[i] < height[j] ? height[i++] : height[j--];
         const area = (j - i + 1) * minHeight;//计算面积
         max = Math.max(max, area);//更新最大面积
@@ -203,7 +276,7 @@ var maxArea = function(height) {
 
 ### 15三数之和   中等
 
-```
+```js
 var threeSum = function(nums) {
     if (!nums || nums.length < 3) return []
     nums = nums.sort((a, b) => a - b);
@@ -232,34 +305,31 @@ var threeSum = function(nums) {
     }
     return result;
 };
+
 ```
 
 
 
 ### 17 电话号码的字母组合   中等
 
-```
+```js
 const letterCombinations = (num) => {
   if(!num) return [];
   const arr = [['a','b','c'], ['d','e','f'],['g','h','i'],['j','k','l'],['m','n','o'],['p','q','r','s'],['t','u','v'],['w','x','y','z']];
   let result = [];
   let numArr = num.toString().split('');
   for(let i = 0, len = numArr.length; i < len; i++) {
-    result.push(arr[numArr[i]-2]);
+    result.push(arr[numArr[i] - 2]);
   }
-
-  // 1、使用while方法递归, 执行用时：64ms，内存占用：33.6M
-  while(result.length > 1) {
-    let arr1 = result[0], arr2 = result[1], temp = [];
-    for(let i = 0, len1 = arr1.length; i < len1; i++) {
-      for(let j = 0, len2 = arr2.length; j < len2; j++) {
-        temp.push(arr1[i] + arr2[j]);
+  return result.reduce((prev, cur) => {
+        let temp = [], m = prev.length, n = cur.length
+        for (let i = 0; i < m; i++) {
+          for (let j = 0; j < n; j++) {
+              temp.push(prev[i] + cur[j])
+          }
       }
-    }
-    result.splice(0, 2, temp);  // 生成的数组替换前两个数组
-  }
-
-  return result[0];  
+    return temp
+  })
 }
 ```
 
@@ -267,44 +337,29 @@ const letterCombinations = (num) => {
 
 ### 19 删除链表的倒数第N个结点   中等
 
-```
+```js
 var removeNthFromEnd = function (head, n) {
-  // 判断n是否小于或等于0，其实现实代码中，这里我会报错
-  if (!head || !n) return head
-  // 快慢指针
-  let slow = head
-  let quick = head
-  let temp = null
-  n = n-1
-  while(quick && n) {
-    quick = quick.next
-    n--
-  }
-  // 判断n是否大于链表的长度，其实现实代码中，这里我会报错
-  if (!quick) {
+    let fast = slow = head, slowPre = null
+    while(--n && fast) fast = fast.next
+    while(fast.next) {
+        slowPre = slow
+        slow = slow.next
+        fast = fast.next
+    }
+    if (slowPre) {
+        slowPre.next = slow.next
+    } else {
+        head = head.next
+    }
     return head
-  }
-  while(quick.next) {
-    temp = slow
-    quick = quick.next
-    slow = slow.next
-  }
-  // 如果slow是第一个，就没有temptemp，这时就返回slow.next
-  if (temp) {
-    temp.next = slow.next
-  } else {
-    head = slow.next
-  }
-  return head
 };
-
 ```
 
 
 
 ### 20有效的括号   简单
 
-```
+```js
 var isValid = function(s) {
     const n = s.length;
     if (n % 2 === 1) {
@@ -316,8 +371,10 @@ var isValid = function(s) {
         ['}', '{']
     ]);
     const stk = [];
+  	// 不能用forEach
     for (let ch of s){
         if (pairs.has(ch)) {
+        		// 这里易忘.length的判断
             if (!stk.length || stk[stk.length - 1] !== pairs.get(ch)) {
                 return false;
             }
@@ -386,6 +443,7 @@ var generateParenthesis = function(n) {
         }
         if (l < n) {
             s.push('(')
+          	// 这里的l，r是局部变量，不要用l++了，这里加完，下面怎么半
             backtrack(s, l + 1, r)
             s.pop()
         }
@@ -402,7 +460,7 @@ var generateParenthesis = function(n) {
 
 
 
-### 23 合并K个升序链表   困难
+### ！23 合并K个升序链表   困难
 
 ```js
 var mergeKLists = function(lists) {
@@ -455,6 +513,7 @@ var nextPermutation = function(nums) {
     while(i >= 0 && nums[i] >= nums[i + 1]){
         i--
     }
+  	// 注意
     if (i >= 0) {
         let j = length - 1
         while(j >= 0 && nums[i] >= nums[j]) {
@@ -515,55 +574,46 @@ var longestValidParentheses2 = function(s) {
  * @return {number}
  */
 var search = function (nums, target) {
-    // 二分法
-    let start = 0;
-    let end = nums.length - 1;
-
-    while (start <= end) {
-        // >> 1 相当于除以2向下取整
-        let mid = (start + end) >> 1;
-
+    let left = 0, right = nums.length - 1
+    while(left <= right) {
+        let mid = (left + right) >> 1
         if (nums[mid] === target) {
-            return mid;
+            return mid
         }
-
-        // 如果中间数小于最右边数，则右半段是有序的
-        // 如果中间数大于最右边数，则左半段是有序的
-        if (nums[mid] < nums[end]) {
-            // 判断target是否在(mid, end]之间
-            if (nums[mid] < target && target <= nums[end]) {
-                // 如果在，则中间数右移即start增大
-                start = mid + 1;
+        // 这里为什么要分情况讨论是为了得到target在左右两边的哪个位置
+        if (nums[mid] < nums[right]) {
+            // 这里切记要有等于的情况
+            if(target <= nums[right] && target > nums[mid]) {
+                left = mid + 1
             } else {
-                // 如果不在，则中间数左移即end减小
-                end = mid - 1;
+                right = mid - 1
             }
         } else {
-            // [start, mid)
-            if (nums[start] <= target && target < nums[mid]) {
-                end = mid - 1;
+            // =的情况
+            if (target >= nums[left] && target < nums[mid]) {
+                right = mid - 1
             } else {
-                start = mid + 1;
+                left = mid + 1
             }
         }
     }
-
-    return -1;
+    return -1
 };
-
 ```
 
 
 
-### 34 在排序数组中查找元素的第一个和最后一个位置   中等
+### ！34 在排序数组中查找元素的第一个和最后一个位置   中等
 
 ```js
 const binarySearch = (nums, target, lower) => {
+    // ans记录
     let left = 0, right = nums.length - 1, ans = nums.length;
     while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+        const mid = (left + right) >> 1
         if (nums[mid] > target || (lower && nums[mid] >= target)) {
             right = mid - 1;
+            // 主要是记住这里，要保留ans
             ans = mid;
         } else {
             left = mid + 1;
@@ -576,7 +626,8 @@ var searchRange = function(nums, target) {
     let ans = [-1, -1];
     const leftIdx = binarySearch(nums, target, true);
     const rightIdx = binarySearch(nums, target, false) - 1;
-    if (leftIdx <= rightIdx && rightIdx < nums.length && nums[leftIdx] === target && nums[rightIdx] === target) {
+    // 
+    if (leftIdx <= rightIdx && nums[leftIdx] === target && nums[rightIdx] === target) {
         ans = [leftIdx, rightIdx];
     } 
     return ans;
@@ -585,7 +636,7 @@ var searchRange = function(nums, target) {
 
 
 
-### 39组合总和   中等
+### ！39组合总和   中等
 
 ```js
 var combinationSum = function(candidates, target) {
@@ -602,10 +653,10 @@ var combinationSum = function(candidates, target) {
         dfs(target, combine, idx + 1);
         // 选择当前数
         if (target - candidates[idx] >= 0) {
+            // [创建了一个副本]
             dfs(target - candidates[idx], [...combine, candidates[idx]], idx);
         }
     }
-
     dfs(target, [], 0);
     return ans;
 };
@@ -617,24 +668,20 @@ var combinationSum = function(candidates, target) {
 
 ``` js
 var trap = function(height) {
-    let ans = 0;
-    let left = 0, right = height.length - 1;
-    let leftMax = 0, rightMax = 0;
-    while (left < right) {
-        leftMax = Math.max(leftMax, height[left]);
-        rightMax = Math.max(rightMax, height[right]);
-      	// 这里额外注意
+    let ans = 0
+    let left = 0, right = height.length  -1 
+    let leftMax = 0, rightMax = 0
+    while(left < right) {
+        leftMax = Math.max(leftMax, height[left])
+        rightMax = Math.max(rightMax, height[right])
         if (height[left] < height[right]) {
-            ans += leftMax - height[left];
-            ++left;
+            ans += leftMax - height[left++]
         } else {
-            ans += rightMax - height[right];
-            --right;
+            ans += rightMax - height[right--]
         }
     }
-    return ans;
+    return ans
 };
-
 ```
 
 
@@ -653,9 +700,12 @@ var permute = function(nums) {
         }
         for (let i = 0; i < nums.length; i++) {
             if (used[i]) continue
+          
             path.push(nums[i])
             used[i] = true
+          
             dfs()
+          
             path.pop()
             used[i] = false
         }
@@ -702,7 +752,9 @@ var rotate = function(matrix) {
 
 
 
-### 49字母异位词分组   中等
+### ! 49字母异位词分组   中等
+
+`定义一个获取该字符串排序后的样子的函数，遍历，把相同的就放到一起,map转数组一定要用扩展运算符`
 
 ```js
 var groupAnagrams = function (strs) {
@@ -722,6 +774,7 @@ var groupAnagrams = function (strs) {
             map.set(key, [item]);
         }
     }
+  	// ！这里必须要要用。。。
     return [...map.values()];
 };
 
@@ -820,23 +873,18 @@ var merge = function(intervals) {
 
 ```js
 var uniquePaths = function(m, n) {
-    let arr = new Array(m);
-    for(let i = 0; i < m; i++) {
-        arr[i] = new Array(n);
-    }
-    
+    const dp = new Array(m).fill(new Array(n).fill(0))
     for (let i = 0; i < m; i++) {
         for (let j = 0; j < n; j++) {
-            if (i == 0 || j == 0 ) {
-                arr[i][j] = 1
-            } else  {
-                arr[i][j] = arr[i - 1][j] + arr[i][j - 1]
+            if(i === 0 || j === 0) {
+                dp[i][j] = 1
+            } else {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1]
             }
         }
     }
-    return arr[m-1][n-1]
+    return dp[m - 1][n - 1]
 };
-
 ```
 
 
@@ -845,19 +893,22 @@ var uniquePaths = function(m, n) {
 
 ```js
 var minPathSum = function(dp) {
-    let row = dp.length, col = dp[0].length
-
-    for(let i = 1; i < row; i++)//初始化第一列
-        dp[i][0] += dp[i - 1][0]
-
-    for(let j = 1; j < col; j++)//初始化第一行
-        dp[0][j] += dp[0][j - 1]
-
-    for(let i = 1; i < row; i++)
-        for(let j = 1; j < col; j++)
-            dp[i][j] += Math.min(dp[i - 1][j], dp[i][j - 1])//取上面和左边最小的
-    
-    return dp[row - 1][col - 1]
+    let m = dp.length, n = dp[0].length;
+    for (let i = 0; i < m; i++) {
+        for (let j = 0; j < n; j++) {
+            if(!i && !j) continue
+            if (i === 0) {
+                dp[i][j] = dp[i][j - 1] + dp[i][j]
+                continue
+            } 
+            if (j === 0) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j]
+                continue
+            }
+            dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + dp[i][j]
+        }
+    }
+    return dp[m - 1][n - 1]
 };
 ```
 
@@ -883,16 +934,12 @@ var climbStairs = function(n) {
 
 ### 75颜色分类   中等
 
+`切记不能用几个if穿在一起写，因为执行完这个if置换之后，就有可能满足下面的if了`
+
 ```js
 var sortColors = function (nums) {
-    if (!Array.isArray(nums)) console.log('Invaild Input');
     if (!nums.length) return []
     let [cur, left, right] = [0, 0, nums.length - 1];
-    const swap = (a, b) => {
-        let temp = nums[a];
-        nums[a] = nums[b];
-        nums[b] = temp;
-    };
     while (cur <= right) {
         if (nums[cur] === 0) {
             swap(left, cur);
@@ -907,30 +954,36 @@ var sortColors = function (nums) {
     }
     return nums
 };
+
+const swap = (a, b) => {
+  let temp = nums[a];
+  nums[a] = nums[b];
+  nums[b] = temp;
+};
 ```
 
 
 
 ### 76 最小覆盖子串   困难
-### 78子集   中等 不是很理解
+### 78子集   中等 
 
-```
+```js
 var subsets = function(nums) {
-    const t = [];
-    const ans = [];
-    const dfs = (cur) => {
-        if (cur === nums.length) {
-            ans.push(t.slice());
-            return;
+    let res = [], path = []
+    const dfs = function(index) {
+        if (index === nums.length) {
+            res.push(path.slice())
+            return 
         }
-        t.push(nums[cur]);
-        dfs(cur + 1);
-        t.pop(t.length - 1);
-        dfs(cur + 1);
+        // 选择
+        path.push(nums[index])
+        dfs(index + 1)
+        path.pop() 
+        // 不选择
+        dfs(index + 1) 
     }
-    dfs(0);
-    return ans;
-};
+    dfs(0)
+    return res
 ```
 
 
@@ -940,35 +993,34 @@ var subsets = function(nums) {
 ```js
 var exist = function(board, word) {
     const h = board.length, w = board[0].length;
-    const directions = [[0, 1], [0, -1], [1, 0], [-1, 0]];
-    const visited = new Array(h).fill().map(_ => new Array(w).fill(false));
-    const check = (i, j, s, k) => {
-        if (board[i][j] != s.charAt(k)) {
-            return false;
-        } else if (k == s.length - 1) {
-            return true;
-        }
-        visited[i][j] = true;
-        let result = false;
-        for (const [dx, dy] of directions) {
-            let newi = i + dx, newj = j + dy;
-            if (newi >= 0 && newi < h && newj >= 0 && newj < w) {
-                if (!visited[newi][newj]) {
-                    const flag = check(newi, newj, s, k + 1);
-                    if (flag) {
-                        result = true;
-                        break;
-                    }
-                }
-            }
-        }
-        visited[i][j] = false;
-        return result;
+    const visited = new Array(h).fill().map(_ => new Array(w).fill(false))
+    const dirs = [[-1, 0], [0, 1], [1, 0], [0, -1]]
+    const inArea = function (x, y) {
+        return x >=0 && x < h && y >=0 && y < w
     }
-
+    const check = function(i, j, k) {
+        if (board[i][j] !== word[k]) {
+            return false
+        } else if (k === word.length - 1) {
+            return true
+        }
+        visited[i][j] = true
+        let result = false
+        for (let [dx, dy] of dirs) {
+            let [newi, newj] = [i + dx, j + dy] 
+            if(inArea(newi, newj) && !visited[newi][newj]) {
+                if (check(newi, newj, k + 1)) {
+                    result = true;
+                    break;
+                }
+            }   
+        }
+        visited[i][j] = false
+        return result
+    }
     for (let i = 0; i < h; i++) {
         for (let j = 0; j < w; j++) {
-            const flag = check(i, j, word, 0);
+            const flag = check(i, j, 0);
             if (flag) {
                 return true;
             }
@@ -1121,25 +1173,15 @@ var maxDepth = function(root) {
 ### 105从前序与中序遍历序列构造二叉树   中等
 
 ```js
-function TreeNode(val) {
-    this.val=val;
-    this.left=this.right=null;
-}
 var buildTree = function(preorder, inorder) {
-    if(preorder.length){
-        let head = new TreeNode(preorder.shift())
-        let index = inorder.indexOf(head.val);
-        head.left=buildTree(
-            preorder.slice(0,index),
-            inorder.slice(0,index)
-        )
-        head.right = buildTree(
-            preorder.slice(index),
-            inorder.slice(index+1)
-        )
-        return head;
-    }else{
-        return null;
+    if (preorder.length) {
+        let root = new TreeNode(preorder.shift())
+        let rootIndex = inorder.indexOf(root.val)
+        root.left = buildTree(preorder.slice(0, rootIndex), inorder.slice(0, rootIndex))
+        root.right = buildTree(preorder.slice(rootIndex, ), inorder.slice(rootIndex + 1, ))
+        return root 
+    } else {
+        return null
     }
 };
 ```
@@ -1231,7 +1273,7 @@ function singleNumber(nums: number[]): number {
 
 
 
-### 139单词拆分     中等
+### ！139单词拆分     中等
 
 ```js
 function wordBreak(s: string, wordDict: string[]): boolean {
@@ -1287,6 +1329,30 @@ var detectCycle = function(head) {
     }
     return null
 };
+// 快慢指针
+var detectCycle = function(head) {
+    if (head === null) {
+        return null;
+    }
+    let slow = head, fast = head;
+    while (fast !== null) {
+        slow = slow.next;
+        if (fast.next !== null) {
+            fast = fast.next.next;
+        } else {
+            return null;
+        }
+        if (fast === slow) {
+            let ptr = head;
+            while (ptr !== slow) {
+                ptr = ptr.next;
+                slow = slow.next;
+            }
+            return ptr;
+        }
+    }
+    return null;
+};
 ```
 
 
@@ -1299,13 +1365,30 @@ var detectCycle = function(head) {
 
 
 
-### 148 排序链表     中等
+### ！148 排序链表     中等
 
 `递归，中分`
 
 ```js
+var mergeTwoLists = function(l1, l2) {
+    if (l1 === null) {
+        return l2;
+    } else if (l2 === null) {
+        return l1;
+    } else if (l1.val < l2.val) {
+        l1.next = mergeTwoLists(l1.next, l2);
+        return l1;
+    } else {
+        l2.next = mergeTwoLists(l1, l2.next);
+        return l2;
+    }
+};
+
+
 var sortList = function(head) {
+  	// 判出条件
     if(head == null || head.next == null) return head
+  	// 取中点
     let fast = head.next
     let slow = head
     while (fast && fast.next) {
@@ -1314,27 +1397,11 @@ var sortList = function(head) {
     }
     let mid = slow.next
     slow.next = null
-    // console.log(slow, mid)
+  	// 递归
     let left = sortList(head)
     let right = sortList(mid)
-
-    let h = new ListNode(0)
-    let res = h
-    while (left && right){
-        if (left.val < right.val) {
-            // [h.next, left] = [left, left.next]
-            h.next = left
-            left = left.next
-        }
-        else {
-            // [h.next, right] = [right, right.next]
-            h.next = right
-            right = right.next
-        }
-        h = h.next
-    }
-    h.next = left ? left: right
-    return res.next
+    // 合并
+    return mergeTwoLists(left, right)
 };
 ```
 
@@ -1400,8 +1467,8 @@ var getIntersectionNode = function(headA, headB) {
     }
     let pA = headA, pB = headB;
     while (pA !== pB) {
-        pA = pA === null ? headB : pA.next;
-        pB = pB === null ? headA : pB.next;
+        pA = !pA ? headB : pA.next;
+        pB = !pB ? headA : pB.next;
     }
     return pA;
 };
@@ -1437,6 +1504,7 @@ var majorityElement = function(nums) {
 
 ```js
 var rob = function(nums) {
+  	// 特殊情况
     if (!nums.length) {
         return 0
     }
@@ -1444,11 +1512,10 @@ var rob = function(nums) {
     if (size === 1) {
         return nums[0]
     }
+  	// 核心
     let p = nums[0], q = Math.max(nums[0], nums[1])
     for (let i = 2; i < size; i++) {
-        const next = Math.max(p + nums[i], q);
-        p = q
-        q = next
+      	[p, q] = [q, Math.max(p + nums[i], q)]
     }
     return q
 };
@@ -1472,7 +1539,8 @@ var numIslands = function(grid) {
     const inArea = function (x, y) {
         return x >=0 && x < m && y >=0 && y < n
     }
-    // 递归函数，深度优先遍历，从grid[i][j]开始移动，将所有链接的陆地标记为访问过
+    
+    // 核心
     const dfs = function (grid, i, j) {
         grid[i][j] = '0'
         for (let k = 0; k < 4; k++) {
@@ -1515,7 +1583,7 @@ var reverseList = function(head) {
 
 
 
-### 207 课程表     中等
+### ! 207 课程表     中等
 
 ```js
 /**
@@ -1526,17 +1594,15 @@ var reverseList = function(head) {
 
 var canFinish = function(numCourses, prerequisites) {                      
     let indegree = new Array(numCourses).fill(0)       // 顶点的入度
-    let dirctMap = []                                  //邻接表(在dfs遍历的时候用得到)
+    const dirctMap = new Array(numCourses).fill().map(_ => new Array())                                  //邻接表(在dfs遍历的时候用得到)
     let result = 0                                     //正规的拓扑排序应该得到一个数组，内容是顺序表，为了节省内存用数量替代
     let ifFind = new Array(numCourses).fill(0)         //用来记录找到了哪些节点
-    for(let i = 0;i<numCourses;i++){                   //初始化邻接表
-        dirctMap.push([])
-    }
     for(let i = 0,l = prerequisites.length;i<l;i++){    //初始化邻接表
         let item = prerequisites[i];
         indegree[item[0]]++                  //记录该节点的入度
         dirctMap[item[1]].push(item[0])      //在邻接表里记录该节点
     }
+  
     for(let i = 0;i<numCourses;i++){         //循环遍历所有节点
             dfs(dirctMap,i,0)
     }
@@ -1617,7 +1683,7 @@ var invertTree = function(root) {
 
 
 
-### 34 回文链表     简单
+### ! 34 回文链表     简单
 
 ```js
 var isPalindrome = function(head) {
@@ -1628,6 +1694,7 @@ var isPalindrome = function(head) {
         slow = slow.next;
         fast = fast.next.next;
     }
+  	// next
     let back = reverseList(slow.next);
     while(back) {
         if(head.val !== back.val) {
@@ -1639,11 +1706,15 @@ var isPalindrome = function(head) {
     return true;
 };
 function reverseList(head){
-    if(!head || !head.next) return head;
-    const r = reverseList(head.next);
-    head.next.next = head;
-    head.next = null;
-    return r;
+    let prev = null
+    let curr = head
+    while(curr) {
+        let next = curr.next
+        curr.next = prev
+        prev = curr
+        curr = next
+    }
+    return prev
 }
 
 ```
@@ -1663,7 +1734,6 @@ var lowestCommonAncestor = function(root, p, q) {
             ans = root
         }
         return lson || rson || root.val === p.val || root.val === q.val
-
     }
     dfs (root, p, q)
     return ans
@@ -1701,7 +1771,9 @@ var productExceptSelf = function(nums: number[]): number[] {
 
 
 
-### 239 滑动窗口最大值     困难
+### ! 239 滑动窗口最大值     困难
+
+<img src="/Users/onlycat/Library/Application Support/typora-user-images/image-20220809195950924.png" alt="image-20220809195950924" style="zoom:50%;" />
 
 ```js
 var maxSlidingWindow = function(nums, k) {
@@ -1864,14 +1936,10 @@ var lengthOfLIS = function(nums) {
 
 ```js
 var maxProfit = function(prices) {
-    if(prices.length === 0){
-        return 0;
-    }
-    let length = prices.length, 
-        f0 = -prices[0], // 持有股票
+    let f0 = -prices[0], // 持有股票
         f1 = 0,  // 不持有，并处于冷冻
         f2 = 0;  // 不持有，不处于冷冻
-    for (let i = 1; i < length; i++) {
+    for (let i = 1; i < prices.length; i++) {
         let newf0 = Math.max(f0, f2 - prices[i]),
             newf1 = f0 + prices[i],
             newf2 = Math.max(f1, f2);
@@ -1970,45 +2038,30 @@ let topKFrequent = function(nums, k) {
 
 
 
-### 394字符串解码    中等
+### ！394字符串解码    中等
 
 ```js
 var decodeString = function(s) {
-    // 用两个栈来存放当前状态，前者是重复次数，后者是累积字符串
-    let repetStack=[],resStack=[];
-    //拼接字符串
-    let resStr = "";
-    //表示重复次数
-    let repet = 0;
-    // 遍历s
-    for(let i=0;i<s.length;i++){
-        let cur = s.charAt(i);
-        if(cur == '['){
-            //双双压入栈中,保存当前状态
-            repetStack.push(repet);
-            resStack.push(resStr);
-            //置空，准备下面的累积
-            repet = 0;
-            resStr = "";
-        }else if(cur == ']'){
-            // 取出当前重复次数栈中的值，也就是当前字符串的重复次数
-            let count = repetStack.pop();
-            // 根据重复次数生成重复字符串，赋值给temp，和resStr拼接
-            let temp = "";
-            for(let i = 0;i<count;i++){
-                temp += resStr;
-            }
-            // 和前面已经求得的字符串进行拼接
-            resStr = resStack.pop() + temp;
-        }else if(cur>='0' && cur<='9'){
-            // repet累积
-            repet = repet*10 + (cur-'0');
-        }else{
-            //字符累积
-            resStr += cur;
+    let numStack = [];              // 倍数 num 的等待栈
+    let strStack = [];              // 待拼接 str 的等待栈
+    let num = 0, result = '';
+    for(let i = 0; i < s.length; i++) {
+        const item = s[i];
+        if(!isNaN(item)) {              // 判断是数字时
+            num = num * 10 + parseInt(item);
+        } else if(item === '[') {
+            strStack.push(result);
+            result = '';
+            numStack.push(num);
+            num = 0;
+        } else if(item === ']') {
+            const repeatTimes = numStack.pop();         // 从栈中获取次数
+            result = strStack.pop() + result.repeat(repeatTimes);
+        } else {
+            result += item;
         }
     }
-    return resStr;
+    return result;
 };
 ```
 
@@ -2041,13 +2094,38 @@ var reconstructQueue = function(people) {
 
 ### 416分割等和子集    中等
 
+```js
+var canPartition = function(nums) {
+    const n = nums.length;
+    if (n < 2) {
+        return false;
+    }
+    let sum = 0, maxNum = 0;
+    for (const num of nums) {
+        sum += num;
+        maxNum = maxNum > num ? maxNum : num;
+    }
+    if (sum & 1) {
+        return false;
+    }
+    const target = Math.floor(sum / 2);
+    if (maxNum > target) {
+        return false;
+    }
+    const dp = new Array(target + 1).fill(false);
+    dp[0] = true;
+    for (const num of nums) {
+        for (let j = target; j >= num; --j) {
+            dp[j] |= dp[j - num];
+        }
+    }
+    return dp[target];
+};
 ```
-// 太难了
-```
 
 
 
-### 437 路径总和川    中等
+### ！437 路径总和川    中等
 
 ```js
 var pathSum = function(root, targetSum) {
@@ -2158,9 +2236,9 @@ var hammingDistance = function(x, y) {
 
 
 
-### 494目标和    中等
+### ！494目标和    中等
 
-```
+```js
 var findTargetSumWays = function(nums, target) {
     let sum = 0;
     for (const num of nums) {
@@ -2242,11 +2320,29 @@ var subarraySum = function(nums, k) {
     }
     return count
 };
+// 优化
+var subarraySum = function(nums, k) {
+    const mp = new Map();
+    mp.set(0, 1);
+    let count = 0, pre = 0;
+    for (const x of nums) {
+        pre += x;
+        if (mp.has(pre - k)) {
+            count += mp.get(pre - k);
+        }
+        if (mp.has(pre)) {
+            mp.set(pre, mp.get(pre) + 1);
+        } else {
+            mp.set(pre, 1);
+        }
+    }
+    return count;
+};
 ```
 
 
 
-### 581 最短无序连续子数组    中等
+### ！581 最短无序连续子数组    中等
 
 ```js
 var findUnsortedSubarray = function(nums) {

@@ -1875,7 +1875,7 @@ console.log(i); // 11
 >
 > AMD： 异步，回调
 >
-> ES6: 静态化，编译阶段， 引用，（能改）
+> ES6: 静态化， 引用，（能改）
 
 ES6 Module和CommonJS模块的区别：
 
@@ -1890,7 +1890,7 @@ Asynchronous ModuleDefinition（AMD），异步模块定义，采用异步方式
 
 代表库为require.js
 
-### 20. 常见的DOM操作有哪些
+### 20. ！常见的DOM操作有哪些
 
 #### 1）DOM 节点的获取
 
@@ -1980,7 +1980,12 @@ container.removeChild(targetNode)
 或者通过子节点数组来完成删除：
 
 ```
-// 获取目标元素的父元素var container = document.getElementById('container')// 获取目标元素var targetNode = container.childNodes[1]// 删除目标元素container.removeChild(targetNode)
+// 获取目标元素的父元素
+var container = document.getElementById('container')
+// 获取目标元素
+var targetNode = container.childNodes[1]
+// 删除目标元素
+container.removeChild(targetNode)
 复制代码
 ```
 
@@ -2139,7 +2144,7 @@ for(var [k,v] of obj){
 
 ```
 
-### 27. ajax、axios、fetch的区别
+### 27. ！ajax、axios、fetch的区别
 
 > ajax: 配置调用方式比较混乱
 >
