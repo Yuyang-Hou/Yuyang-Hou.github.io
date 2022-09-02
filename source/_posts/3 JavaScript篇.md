@@ -1,7 +1,7 @@
 ---
 title: JavaScript
 tag:   JavaScript
-data: 2022-06-03
+data: 2022-06-03 19:11:58
 post_meta:
   item_text: false
   created_at: true
