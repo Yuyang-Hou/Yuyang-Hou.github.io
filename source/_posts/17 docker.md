@@ -2,13 +2,6 @@
 title: docker踩坑记录
 tag: docker
 date: 2022-06-11
-post_meta:
-  item_text: false
-  created_at: true
-  updated_at: false
-  categories: true
-  tags: true
-# hideTime: true
 ---
 
 # docker
