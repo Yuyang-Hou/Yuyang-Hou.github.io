@@ -1,13 +1,7 @@
 ---
 title: CSS
-tag:   CSS
 data: 2022-06-02 19:11:58
-post_meta:
-  item_text: false
-  created_at: true
-  updated_at: false
-  categories: true
-  tags: true
+tag:   CSS
 ---
 # CSS篇
 

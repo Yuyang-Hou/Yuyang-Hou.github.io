@@ -1,13 +1,7 @@
 ---
 title: JavaScript
-tag:   JavaScript
 data: 2022-06-03 19:11:58
-post_meta:
-  item_text: false
-  created_at: true
-  updated_at: false
-  categories: true
-  tags: true
+tag:   JavaScript
 ---
 # JavaScript篇
 
