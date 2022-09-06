@@ -1,5 +1,5 @@
 ---
-title: leetcode top100三刷记录
+title: hot100三刷记录
 data: 2022-07-04 19:11:58
 ---
 
