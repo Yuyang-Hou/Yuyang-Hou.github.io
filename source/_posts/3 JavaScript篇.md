@@ -1,7 +1,7 @@
 ---
 title: JavaScript
-data: 2022-06-03 19:11:58
-tag:   JavaScript
+tag: JavaScript
+date: 2022-06-03 19:11:58
 ---
 # JavaScript篇
 
