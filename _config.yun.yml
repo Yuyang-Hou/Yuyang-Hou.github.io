@@ -71,7 +71,7 @@ reward:
 footer:
   powered:
     enable: false
-    
+
 post_meta:
   item_text: false
   created_at: true
@@ -79,6 +79,9 @@ post_meta:
   categories: true
   tags: true
 
+wordcloud:
+  enable: true
+  
 banner:
   enable: true
   title: 一只猫的小站
@@ -90,3 +93,4 @@ banner:
     enable: true
     icon: ri:arrow-down-s-line
 favicon: /favicon.svg
+
