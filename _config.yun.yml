@@ -71,12 +71,7 @@ reward:
 footer:
   powered:
     enable: false
-post_meta:
-  item_text: false
-  created_at: true
-  updated_at: false
-  categories: true
-  tags: true
+
 
 banner:
   enable: true
