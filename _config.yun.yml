@@ -103,3 +103,10 @@ banner:
     icon: ri:arrow-down-s-line
 favicon: /favicon.svg
 
+github_issues:
+  enable: true
+  username: Yuyang-Hou
+  repository: yuyang-hou.github.io
+  filters: is:issue
+
+
