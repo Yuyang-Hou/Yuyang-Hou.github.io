@@ -1,7 +1,7 @@
 ---
 title: HTML
 tag:   HTML
-data: 2022-06-01 19:11:58
+date: 2022/06/01 19:11:58
 post_meta:
   item_text: false
   created_at: true
