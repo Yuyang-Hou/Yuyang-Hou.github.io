@@ -3,6 +3,10 @@ title: vue实现配置化表单
 date: 2022-09-07 19:11:58
 ---
 
+![test test](https://pic3.zhimg.com/v2-f4cacab46386a7fb655c8405d7f9bedf_720w.webp?source=d16d100b)
+
+<!-- more -->
+
 > 记录前端配置话的方案和优化点
 
 ### 1、通过协议进行渲染
