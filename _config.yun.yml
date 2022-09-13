@@ -87,6 +87,18 @@ comment:
   tips:
     - 若您想及时得到回复提醒，建议跳转 GitHub Issues 评论。
     - 若没有本文 Issue，您可以使用 Comment 模版新建。
+waline:
+  enable: true
+  serverURL: https://yuyang-hou-blog-4nfmc95tc-yuyang-hou.vercel.app
+  visitor: true
+  comment: true
+  emoji:
+    - https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/bilibili/
+    - https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/weibo/
+    - https://fastly.jsdelivr.net/gh/walinejs/emojis@latest/qq/
+  locale:
+    placeholder: 填写邮箱，可以收到回复通知哦～
+  requiredMeta: [nick]
 
 banner:
   enable: true
@@ -101,7 +113,7 @@ banner:
 favicon: /favicon.svg
 
 github_issues:
-  enable: true
+  enable: false
   username: Yuyang-Hou
   repository: Yuyang-Hou.github.io
   filters: is:issue
