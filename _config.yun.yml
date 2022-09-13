@@ -84,9 +84,7 @@ wordcloud:
 
 comment:
   enable: true
-  tips:
-    - 若您想及时得到回复提醒，建议跳转 GitHub Issues 评论。
-    - 若没有本文 Issue，您可以使用 Comment 模版新建。
+  
 waline:
   enable: true
   serverURL: https://yuyang-hou-blog-4nfmc95tc-yuyang-hou.vercel.app
