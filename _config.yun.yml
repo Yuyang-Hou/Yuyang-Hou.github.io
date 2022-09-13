@@ -87,9 +87,6 @@ comment:
   tips:
     - 若您想及时得到回复提醒，建议跳转 GitHub Issues 评论。
     - 若没有本文 Issue，您可以使用 Comment 模版新建。
-  candidates:
-    - waline
-    - utterances
 
 banner:
   enable: true
@@ -106,7 +103,7 @@ favicon: /favicon.svg
 github_issues:
   enable: true
   username: Yuyang-Hou
-  repository: yuyang-hou.github.io
+  repository: Yuyang-Hou.github.io
   filters: is:issue
 
 
